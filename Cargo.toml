@@ -1,0 +1,21 @@
+[package]
+name = "shifter"
+version = "0.1.0"
+authors = ["Evgeny Papazyan <swordelf@mail.ru>"]
+edition = "2018"
+
+[features]
+# enable debug systems, defined in `debug` module
+debug = []
+
+[dependencies]
+bevy = "0.5"
+image = "0.23"
+
+# Enable optimizations for dependencies (incl. Bevy), but not for our code:
+[profile.dev.package."*"]
+opt-level = 3
+
+# Maybe also enable only a small amount of optimization for our code:
+[profile.dev]
+opt-level = 1
