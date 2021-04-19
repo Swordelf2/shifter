@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{game, loading, state::AppState};
+use crate::{game, loading, menu, state::AppState};
 
 #[cfg(feature = "debug")]
 use crate::debug;
@@ -33,7 +33,15 @@ pub fn run() {
             .with_system(loading::check_loading.system()),
     )
     /* Menu module */
-    // TODO
+    .add_system_set(
+        SystemSet::on_enter(AppState::Menu).with_system(menu::setup.system()),
+    )
+    .add_system_set(
+        SystemSet::on_update(AppState::Menu).with_system(menu::update.system()),
+    )
+    .add_system_set(
+        SystemSet::on_exit(AppState::Menu).with_system(menu::exit.system())
+    )
     /* Game module */
     .add_system_set(
         SystemSet::on_enter(AppState::Game)

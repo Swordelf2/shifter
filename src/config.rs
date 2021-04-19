@@ -6,6 +6,10 @@ pub mod paths {
         pub const PLAYER: &str = "textures/player.png";
         pub const PRINCESS: &str = "textures/princess.png";
     }
+
+    pub mod fonts {
+        pub const NOTO_SANS_REGULAR: &str = "fonts/NotoSans-Regular.ttf";
+    }
 }
 
 pub mod map {
@@ -17,7 +21,7 @@ pub mod map {
             [255, 0, 0] => Some(Prefab::Princess),
             [0, 255, 0] => Some(Prefab::Player(Default::default())),
             [0, 0, 255] => Some(Prefab::Hazard),
-            _ => None
+            _ => None,
         }
     }
 }

@@ -1,3 +1,4 @@
+//! Game state describes the actual gameplay of the app
 mod spawn_world;
 
 pub mod player;

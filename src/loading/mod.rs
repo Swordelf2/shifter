@@ -15,16 +15,23 @@ pub struct HandlesToCheck(Vec<HandleUntyped>);
 
 /// Start loading assets
 pub fn start_loading(mut commands: Commands, asset_server: Res<AssetServer>) {
-    // Textures
     let mut handles: Vec<HandleUntyped> = Vec::new();
-
-    let player = asset_server.load(paths::textures::PLAYER);
-    handles.push(player.clone_untyped());
-    let princess = asset_server.load(paths::textures::PRINCESS);
-    handles.push(princess.clone_untyped());
+    // Textures
+    {
+        let player = asset_server.load(paths::textures::PLAYER);
+        handles.push(player.clone_untyped());
+        let princess = asset_server.load(paths::textures::PRINCESS);
+        handles.push(princess.clone_untyped());
+        commands.insert_resource(asset::TextureHandles { player, princess });
+    }
+    // Fonts
+    {
+        let noto_sans_regular = asset_server.load(paths::fonts::NOTO_SANS_REGULAR);
+        handles.push(noto_sans_regular.clone_untyped());
+        commands.insert_resource(asset::FontHandles { noto_sans_regular });
+    }
 
     commands.insert_resource(HandlesToCheck(handles));
-    commands.insert_resource(asset::TextureHandles { player, princess });
 
     // Map image
     commands.insert_resource(asset::MapImage(
@@ -47,7 +54,7 @@ pub fn check_loading(
     {
         commands.remove_resource::<HandlesToCheck>();
         // Transition to the next state
-        app_state.set(AppState::Game).unwrap();
+        app_state.set(AppState::Menu).unwrap();
     }
 
     commands.insert_resource(asset::MaterialHandles {

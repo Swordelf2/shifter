@@ -14,5 +14,10 @@ pub struct MaterialHandles {
     pub hazard: Handle<ColorMaterial>,
 }
 
+/// Handles to fonts
+pub struct FontHandles {
+    pub noto_sans_regular: Handle<Font>,
+}
+
 /// Pixel image, which is used to construct world map
 pub struct MapImage(pub RgbImage);
