@@ -1,14 +1,13 @@
 use bevy::prelude::*;
 
 use crate::asset;
-use crate::config::{depths, map_colors, CELL_SIZE};
+use crate::config::{map, CELL_SIZE};
 
-use super::player::Player;
+use super::spawn::Spawn;
 
 pub fn spawn_world(
-    mut commands: Commands,
-    material_handles: Res<asset::MaterialHandles>,
     map_img: Res<asset::MapImage>,
+    mut spawns: EventWriter<Spawn>,
 ) {
     /*
     // Load player texture atlas
@@ -21,7 +20,8 @@ pub fn spawn_world(
     };
     */
 
-    // Iterate over the pixels of the map image and spawn corresponding cells (player and hazards)
+    // Iterate over the pixels of the map image and spawn corresponding entities
+    // by sending `Spawn` event to the `spawn` system
     let map_img = &map_img.0;
     for (x, mut y, &pixel) in map_img.enumerate_pixels() {
         // Invert the y axis
@@ -30,73 +30,11 @@ pub fn spawn_world(
         let cell_pos_x = x as f32 * CELL_SIZE + CELL_SIZE / 2.0;
         let cell_pos_y = y as f32 * CELL_SIZE + CELL_SIZE / 2.0;
 
-        match pixel.0 {
-            // Red = Princess (finish cell)
-            map_colors::PRINCESS => {
-                // Spawn princess
-                commands.spawn_bundle(SpriteBundle {
-                    material: material_handles.princess.clone(),
-                    transform: Transform::from_translation(Vec3::new(
-                        cell_pos_x,
-                        cell_pos_y,
-                        depths::PRINCESS,
-                    )),
-                    sprite: Sprite::new(Vec2::new(CELL_SIZE, CELL_SIZE)),
-                    ..Default::default()
-                });
-                //.insert(Collider::Princess);
-            }
-            // Green = Start cell
-            map_colors::PLAYER => {
-                // Spawn player
-                commands
-                    .spawn_bundle(SpriteBundle {
-                        material: material_handles.player.clone(),
-                        transform: Transform::from_translation(Vec3::new(
-                            cell_pos_x,
-                            cell_pos_y,
-                            depths::PLAYER,
-                        )),
-                        sprite: Sprite::new(Vec2::new(
-                            2.0 * CELL_SIZE,
-                            2.0 * CELL_SIZE,
-                        )),
-                        ..Default::default()
-                    })
-                    .insert(Player)
-                    // Spawn child camera
-                    .with_children(|parent| {
-                        let mut camera = OrthographicCameraBundle::new_2d();
-                        // TODO camera bug: hazard are drawn with this line ??
-                        // absolute z should be = `far` - `eps`
-                        camera.transform.translation.z =
-                            1000.0 - 0.5 - depths::PLAYER;
-                        parent.spawn_bundle(camera);
-                    });
-                /*
-                // Store the start position as a resource
-                commands.insert_resource(StartPos {
-                    x: cell_pos_x,
-                    y: cell_pos_y,
-                });
-                */
-            }
-            // Blue = Hazard cell
-            map_colors::HAZARD => {
-                // Spawn a hazard cell
-                commands.spawn_bundle(SpriteBundle {
-                    material: material_handles.hazard.clone(),
-                    transform: Transform::from_translation(Vec3::new(
-                        cell_pos_x,
-                        cell_pos_y,
-                        depths::HAZARD,
-                    )),
-                    sprite: Sprite::new(Vec2::new(CELL_SIZE, CELL_SIZE)),
-                    ..Default::default()
-                });
-                //.insert(Collider::Hazard);
-            }
-            _ => {}
+        if let Some(prefab) = map::pixel2prefab(pixel.0) {
+            spawns.send(Spawn {
+                position: Vec2::new(cell_pos_x, cell_pos_y),
+                prefab,
+            });
         }
     }
 }

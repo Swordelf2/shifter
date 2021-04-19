@@ -8,11 +8,18 @@ pub mod paths {
     }
 }
 
-/// Mapping from in-game entities to colors on the map image
-pub mod map_colors {
-    pub const PRINCESS: [u8; 3] = [255, 0, 0];
-    pub const PLAYER: [u8; 3] = [0, 255, 0];
-    pub const HAZARD: [u8; 3] = [0, 0, 255];
+pub mod map {
+    use crate::game::spawn::Prefab;
+
+    pub fn pixel2prefab(pixel: [u8; 3]) -> Option<Prefab> {
+        match pixel {
+            // Red = Princess
+            [255, 0, 0] => Some(Prefab::Princess),
+            [0, 255, 0] => Some(Prefab::Player(Default::default())),
+            [0, 0, 255] => Some(Prefab::Hazard),
+            _ => None
+        }
+    }
 }
 
 // Cell size in pixels

@@ -1,3 +1,4 @@
+use bevy::ecs::system::QuerySingleError;
 use bevy::prelude::*;
 
 use core::f32::consts::PI;
@@ -15,7 +16,15 @@ pub fn player_control(
     time: Res<Time>,
     mut query: Query<&mut Transform, With<Player>>,
 ) {
-    let mut transform = query.single_mut().expect("No player entity found");
+    let mut transform = match query.single_mut() {
+        Ok(transform) => transform,
+        Err(QuerySingleError::NoEntities(_)) => {
+            return;
+        }
+        Err(QuerySingleError::MultipleEntities(e)) => {
+            panic!("Multiple player entities: {}", e);
+        }
+    };
 
     let angle = transform.rotation.to_axis_angle().1
         + time.delta_seconds() * ROTATION_SPEED;

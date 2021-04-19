@@ -21,6 +21,8 @@ pub fn run() {
     .add_plugins(DefaultPlugins)
     // State //
     .add_state(AppState::Loading)
+    // Events
+    .add_event::<game::spawn::Spawn>()
     /* Loading module */
     .add_system_set(
         SystemSet::on_enter(AppState::Loading)
@@ -37,9 +39,11 @@ pub fn run() {
         SystemSet::on_enter(AppState::Game)
             .with_system(game::spawn_world.system()),
     )
+    // TODO system ordering, maybe stages, maybe labels
     .add_system_set(
         SystemSet::on_update(AppState::Game)
-            .with_system(game::player::player_control.system()),
+            .with_system(game::player::player_control.system())
+            .with_system(game::spawn::spawn.system()),
     );
 
     /* Debug module */
