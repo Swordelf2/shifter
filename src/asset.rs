@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use image::RgbImage;
 
+use crate::config::paths;
+
 /// Handles to loaded textures
 pub struct TextureHandles {
     pub player: Handle<Texture>,
@@ -19,5 +21,7 @@ pub struct FontHandles {
     pub noto_sans_regular: Handle<Font>,
 }
 
-/// Pixel image, which is used to construct world map
-pub struct MapImage(pub RgbImage);
+/// Pixel images, which are used to construct world map
+pub struct MapImages {
+    pub images: [RgbImage; paths::MAPS.len()],
+}

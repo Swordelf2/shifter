@@ -1,6 +1,6 @@
 /// Asset paths
 pub mod paths {
-    pub const MAP: &str = "assets/map.png";
+    pub const MAPS: [&str; 2] = ["assets/map1.png", "assets/map2.png"];
 
     pub mod textures {
         pub const PLAYER: &str = "textures/player.png";
@@ -23,6 +23,22 @@ pub mod map {
             [0, 0, 255] => Some(Prefab::Hazard),
             _ => None,
         }
+    }
+}
+
+// Controls
+pub mod keybinds {
+    use bevy::input::keyboard::KeyCode;
+
+    pub const PAUSE: KeyCode = KeyCode::Escape;
+
+    pub mod movement {
+        use super::KeyCode;
+
+        pub const UP: KeyCode = KeyCode::Up;
+        pub const RIGHT: KeyCode = KeyCode::Right;
+        pub const LEFT: KeyCode = KeyCode::Left;
+        pub const DOWN: KeyCode = KeyCode::Down;
     }
 }
 

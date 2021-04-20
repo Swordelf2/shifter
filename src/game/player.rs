@@ -3,7 +3,7 @@ use bevy::prelude::*;
 
 use core::f32::consts::PI;
 
-use crate::config::{MOVE_SPEED, ROTATION_SPEED};
+use crate::config::{keybinds, MOVE_SPEED, ROTATION_SPEED};
 
 /// Marker component for the player entity
 pub struct Player;
@@ -36,28 +36,28 @@ pub fn player_control(
 
     transform.rotation = Quat::from_rotation_z(angle);
 
-    if input.pressed(KeyCode::A) {
+    if input.pressed(keybinds::movement::LEFT) {
         transform.translation += Vec3::new(
             -time.delta_seconds() * MOVE_SPEED * angle.cos(),
             -time.delta_seconds() * MOVE_SPEED * angle.sin(),
             0.0,
         );
     }
-    if input.pressed(KeyCode::D) {
+    if input.pressed(keybinds::movement::RIGHT) {
         transform.translation += Vec3::new(
             time.delta_seconds() * MOVE_SPEED * angle.cos(),
             time.delta_seconds() * MOVE_SPEED * angle.sin(),
             0.0,
         );
     }
-    if input.pressed(KeyCode::W) {
+    if input.pressed(keybinds::movement::UP) {
         transform.translation += Vec3::new(
             -time.delta_seconds() * MOVE_SPEED * angle.sin(),
             time.delta_seconds() * MOVE_SPEED * angle.cos(),
             0.0,
         );
     }
-    if input.pressed(KeyCode::S) {
+    if input.pressed(keybinds::movement::DOWN) {
         transform.translation += Vec3::new(
             time.delta_seconds() * MOVE_SPEED * angle.sin(),
             -time.delta_seconds() * MOVE_SPEED * angle.cos(),

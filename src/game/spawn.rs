@@ -7,6 +7,7 @@ use bevy::prelude::*;
 use crate::asset::MaterialHandles;
 use crate::config::{depths, CELL_SIZE};
 
+use super::overlord::Overlord;
 use super::player::Player;
 
 /// Spawn type, indicating which prefab to spawn
@@ -40,9 +41,12 @@ pub fn spawn(
     mut commands: Commands,
     mut spawns: ResMut<Events<Spawn>>,
     material_handles: Res<MaterialHandles>,
+    overlord_query: Query<Entity, With<Overlord>>,
 ) {
+    // Everything that spawns in the `game` should be inserted into overlord's children
+    let mut overlord_new_children = Vec::new();
     for spawn in spawns.drain() {
-        match spawn.prefab {
+        let new_child = match spawn.prefab {
             Prefab::Player(player_prefab) => {
                 let mut entity = commands.spawn_bundle(SpriteBundle {
                     material: material_handles.player.clone(),
@@ -68,31 +72,42 @@ pub fn spawn(
                         parent.spawn_bundle(camera);
                     });
                 }
+                entity.id()
             }
             Prefab::Princess => {
-                commands.spawn_bundle(SpriteBundle {
-                    material: material_handles.princess.clone(),
-                    transform: Transform::from_translation(Vec3::from((
-                        spawn.position,
-                        depths::PRINCESS,
-                    ))),
-                    sprite: Sprite::new(Vec2::new(CELL_SIZE, CELL_SIZE)),
-                    ..Default::default()
-                });
+                commands
+                    .spawn_bundle(SpriteBundle {
+                        material: material_handles.princess.clone(),
+                        transform: Transform::from_translation(Vec3::from((
+                            spawn.position,
+                            depths::PRINCESS,
+                        ))),
+                        sprite: Sprite::new(Vec2::new(CELL_SIZE, CELL_SIZE)),
+                        ..Default::default()
+                    })
+                    .id()
                 //.insert(Princess or smth)
             }
             Prefab::Hazard => {
-                commands.spawn_bundle(SpriteBundle {
-                    material: material_handles.hazard.clone(),
-                    transform: Transform::from_translation(Vec3::from((
-                        spawn.position,
-                        depths::HAZARD,
-                    ))),
-                    sprite: Sprite::new(Vec2::new(CELL_SIZE, CELL_SIZE)),
-                    ..Default::default()
-                });
+                commands
+                    .spawn_bundle(SpriteBundle {
+                        material: material_handles.hazard.clone(),
+                        transform: Transform::from_translation(Vec3::from((
+                            spawn.position,
+                            depths::HAZARD,
+                        ))),
+                        sprite: Sprite::new(Vec2::new(CELL_SIZE, CELL_SIZE)),
+                        ..Default::default()
+                    })
+                    .id()
                 //.insert(Hazard or smth)
             }
-        }
+        };
+
+        overlord_new_children.push(new_child);
     }
+
+    commands
+        .entity(overlord_query.single().unwrap())
+        .push_children(&overlord_new_children);
 }

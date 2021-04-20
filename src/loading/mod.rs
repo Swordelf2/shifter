@@ -26,17 +26,21 @@ pub fn start_loading(mut commands: Commands, asset_server: Res<AssetServer>) {
     }
     // Fonts
     {
-        let noto_sans_regular = asset_server.load(paths::fonts::NOTO_SANS_REGULAR);
+        let noto_sans_regular =
+            asset_server.load(paths::fonts::NOTO_SANS_REGULAR);
         handles.push(noto_sans_regular.clone_untyped());
         commands.insert_resource(asset::FontHandles { noto_sans_regular });
     }
 
     commands.insert_resource(HandlesToCheck(handles));
 
-    // Map image
-    commands.insert_resource(asset::MapImage(
-        image::open(paths::MAP).unwrap().into_rgb8(),
-    ));
+    // Map images
+    commands.insert_resource(asset::MapImages {
+        images: [
+            image::open(paths::MAPS[0]).unwrap().into_rgb8(),
+            image::open(paths::MAPS[1]).unwrap().into_rgb8(),
+        ],
+    })
 }
 
 /// Check if all assets are loaded
@@ -58,8 +62,10 @@ pub fn check_loading(
     }
 
     commands.insert_resource(asset::MaterialHandles {
-        player: materials.add(ColorMaterial::from(texture_handles.player.clone())),
-        princess: materials.add(ColorMaterial::from(texture_handles.princess.clone())),
+        player: materials
+            .add(ColorMaterial::from(texture_handles.player.clone())),
+        princess: materials
+            .add(ColorMaterial::from(texture_handles.princess.clone())),
         hazard: materials.add(ColorMaterial::from(Color::rgb(0.0, 0.0, 0.95))),
     });
 }

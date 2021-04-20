@@ -40,23 +40,32 @@ pub fn run() {
         SystemSet::on_update(AppState::Menu).with_system(menu::update.system()),
     )
     .add_system_set(
-        SystemSet::on_exit(AppState::Menu).with_system(menu::exit.system())
+        SystemSet::on_exit(AppState::Menu).with_system(menu::exit.system()),
     )
     /* Game module */
     .add_system_set(
         SystemSet::on_enter(AppState::Game)
-            .with_system(game::spawn_world.system()),
+            .with_system(game::overlord::spawn_overlord.system())
+            .with_system(game::world::spawn_world.system()),
     )
     // TODO system ordering, maybe stages, maybe labels
     .add_system_set(
         SystemSet::on_update(AppState::Game)
             .with_system(game::player::player_control.system())
-            .with_system(game::spawn::spawn.system()),
+            .with_system(game::spawn::spawn.system())
+            .with_system(game::overlord::exit_press.system()),
+    )
+    .add_system_set(
+        SystemSet::on_exit(AppState::Game)
+            .with_system(game::overlord::exit.system()),
     );
 
     /* Debug module */
     #[cfg(feature = "debug")]
-    app.add_system(debug::test_system.system());
+    {
+        app.add_system(debug::test_system.system())
+            .add_plugin(bevy_inspector_egui::WorldInspectorPlugin::new());
+    }
 
     app.run();
 }

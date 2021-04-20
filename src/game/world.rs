@@ -1,12 +1,13 @@
 use bevy::prelude::*;
 
-use crate::asset;
 use crate::config::{map, CELL_SIZE};
+use crate::{asset, menu};
 
 use super::spawn::Spawn;
 
 pub fn spawn_world(
-    map_img: Res<asset::MapImage>,
+    map_images: Res<asset::MapImages>,
+    map_button: Res<menu::MapButton>,
     mut spawns: EventWriter<Spawn>,
 ) {
     /*
@@ -22,10 +23,10 @@ pub fn spawn_world(
 
     // Iterate over the pixels of the map image and spawn corresponding entities
     // by sending `Spawn` event to the `spawn` system
-    let map_img = &map_img.0;
-    for (x, mut y, &pixel) in map_img.enumerate_pixels() {
+    let map_image = &map_images.images[map_button.map_idx];
+    for (x, mut y, &pixel) in map_image.enumerate_pixels() {
         // Invert the y axis
-        y = map_img.height() - y - 1;
+        y = map_image.height() - y - 1;
         // Calculate cell position
         let cell_pos_x = x as f32 * CELL_SIZE + CELL_SIZE / 2.0;
         let cell_pos_y = y as f32 * CELL_SIZE + CELL_SIZE / 2.0;
