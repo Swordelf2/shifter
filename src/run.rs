@@ -32,7 +32,7 @@ pub fn run() {
         SystemSet::on_update(AppState::Loading)
             .with_system(loading::check_loading.system()),
     )
-    /* Menu module */
+    ////* Menu module *////
     .add_system_set(
         SystemSet::on_enter(AppState::Menu).with_system(menu::setup.system()),
     )
@@ -42,29 +42,48 @@ pub fn run() {
     .add_system_set(
         SystemSet::on_exit(AppState::Menu).with_system(menu::exit.system()),
     )
-    /* Game module */
+    ////* Game module *////
+    // Enter
     .add_system_set(
         SystemSet::on_enter(AppState::Game)
             .with_system(game::overlord::spawn_overlord.system())
             .with_system(game::world::spawn_world.system()),
     )
-    // TODO system ordering, maybe stages, maybe labels
+    // Input
     .add_system_set(
         SystemSet::on_update(AppState::Game)
-            .with_system(game::player::player_control.system())
-            .with_system(game::spawn::spawn.system())
+            .label(game::SystemLabel::Input)
+            .with_system(game::player::input.system())
             .with_system(game::overlord::exit_press.system()),
     )
+    // Physics
+    .add_system_set(
+        SystemSet::on_update(AppState::Game)
+            .label(game::SystemLabel::Physics)
+            .after(game::SystemLabel::Input)
+            .with_system(game::physics::movement.system()),
+    )
+    // Player rotation mechanic
+    .add_system_set(
+        SystemSet::on_update(AppState::Game)
+            .with_system(game::player::rotation.system()),
+    )
+    // Spawn
+    .add_system_set(
+        SystemSet::on_update(AppState::Game)
+            .with_system(game::spawn::spawn.system()),
+    )
+    // Exit
     .add_system_set(
         SystemSet::on_exit(AppState::Game)
             .with_system(game::overlord::exit.system()),
     );
 
-    /* Debug module */
+    ////* Debug module *////
     #[cfg(feature = "debug")]
     {
-        app.add_system(debug::test_system.system())
-            .add_plugin(bevy_inspector_egui::WorldInspectorPlugin::new());
+        app.add_plugin(bevy_inspector_egui::WorldInspectorPlugin::new())
+            .add_system(debug::test_system.system());
     }
 
     app.run();

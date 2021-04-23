@@ -5,10 +5,9 @@ use bevy::app::Events;
 use bevy::prelude::*;
 
 use crate::asset::MaterialHandles;
-use crate::config::{depths, CELL_SIZE};
+use crate::config::{depths, CELL_SIZE, PLAYER_MAX_SPEED};
 
-use super::overlord::Overlord;
-use super::player::Player;
+use super::{overlord, physics, player};
 
 /// Spawn type, indicating which prefab to spawn
 pub enum Prefab {
@@ -41,7 +40,7 @@ pub fn spawn(
     mut commands: Commands,
     mut spawns: ResMut<Events<Spawn>>,
     material_handles: Res<MaterialHandles>,
-    overlord_query: Query<Entity, With<Overlord>>,
+    overlord_query: Query<Entity, With<overlord::Overlord>>,
 ) {
     // Everything that spawns in the `game` should be inserted into overlord's children
     let mut overlord_new_children = Vec::new();
@@ -60,7 +59,10 @@ pub fn spawn(
                     )),
                     ..Default::default()
                 });
-                entity.insert(Player);
+                entity.insert(player::Player).insert(
+                    physics::DynamicObject::new(Some(PLAYER_MAX_SPEED)),
+                );
+
                 if player_prefab.with_camera {
                     // Spawn camera as a child to the player
                     entity.with_children(|parent| {

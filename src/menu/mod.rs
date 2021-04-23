@@ -133,6 +133,7 @@ pub fn exit(
     commands
         .entity(menu_query.single().unwrap())
         .despawn_recursive();
+    // Despawn the camera
     commands
         .entity(camera_query.single().unwrap())
         .despawn_recursive();

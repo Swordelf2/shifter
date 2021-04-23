@@ -1,10 +1,11 @@
 mod asset;
 mod config;
+mod game;
 mod loading;
 mod menu;
-mod game;
 mod run;
 mod state;
+mod util;
 
 #[cfg(feature = "debug")]
 mod debug;

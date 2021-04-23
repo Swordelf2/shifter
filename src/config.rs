@@ -26,7 +26,7 @@ pub mod map {
     }
 }
 
-// Controls
+/// Controls
 pub mod keybinds {
     use bevy::input::keyboard::KeyCode;
 
@@ -35,19 +35,27 @@ pub mod keybinds {
     pub mod movement {
         use super::KeyCode;
 
-        pub const UP: KeyCode = KeyCode::Up;
-        pub const RIGHT: KeyCode = KeyCode::Right;
-        pub const LEFT: KeyCode = KeyCode::Left;
-        pub const DOWN: KeyCode = KeyCode::Down;
+        pub const UP: KeyCode = KeyCode::W;
+        pub const RIGHT: KeyCode = KeyCode::D;
+        pub const LEFT: KeyCode = KeyCode::A;
+        pub const DOWN: KeyCode = KeyCode::S;
     }
 }
 
-// Cell size in pixels
+/// Cell size in pixels
 pub const CELL_SIZE: f32 = 32.0;
-// Player move speed
-pub const MOVE_SPEED: f32 = CELL_SIZE * 3.0;
-// Player rotation speed
-pub const ROTATION_SPEED: f32 = 0.0; // 1.0
+/// Player acceleration
+pub const PLAYER_ACCEL: f32 = 5.0 * CELL_SIZE;
+/// Player maximum speed
+pub const PLAYER_MAX_SPEED: f32 = 10.0 * CELL_SIZE;
+/// Player rotation speed
+pub const ROTATION_SPEED: f32 = 1.0;
+
+pub mod physics {
+    /// No physical object in the game can exceed this speed
+    /// All speeds are in (world points)/second
+    pub const GLOBAL_MAX_SPEED: f32 = 200.0;
+}
 
 /// Z depths of entities
 pub mod depths {
