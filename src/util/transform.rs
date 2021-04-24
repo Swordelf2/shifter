@@ -40,7 +40,7 @@ mod tests {
 
     use bevy::math::Quat;
 
-    use crate::util::Vec2Ext;
+    use crate::config::EPS;
 
     use super::*;
 
@@ -50,15 +50,21 @@ mod tests {
         let transform =
             Transform::from_rotation(Quat::from_rotation_z(PI * 0.5));
 
-        assert!(Vec2Ext::almost_eq(
+        assert!(Vec2::abs_diff_eq(
             &transform.forward(),
-            Vec2::new(-1.0, 0.0)
+            Vec2::new(-1.0, 0.0),
+            EPS
         ));
-        assert!(Vec2Ext::almost_eq(&transform.left(), Vec2::new(0.0, -1.0)));
-        assert!(Vec2Ext::almost_eq(
+        assert!(Vec2.abs_diff_eq(&transform.left(), Vec2::new(0.0, -1.0), EPS));
+        assert!(Vec2::abs_diff_eq(
             &transform.backward(),
-            Vec2::new(1.0, 0.0)
+            Vec2::new(1.0, 0.0),
+            EPS
         ));
-        assert!(Vec2Ext::almost_eq(&transform.right(), Vec2::new(0.0, 1.0)));
+        assert!(Vec2::abs_diff_eq(
+            &transform.right(),
+            Vec2::new(0.0, 1.0),
+            EPS
+        ));
     }
 }
