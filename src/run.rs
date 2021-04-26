@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{game, loading, menu, state::AppState};
+use crate::{camera, game, loading, menu, state::AppState};
 
 #[cfg(feature = "debug")]
 use crate::debug;
@@ -22,8 +22,11 @@ pub fn run() {
     // State //
     .add_state(AppState::Loading)
     // Events
-    .add_event::<game::spawn::Spawn>()
-    /* Loading module */
+    .add_event::<game::spawner::Spawn>()
+    /*** SYSTEMS ***/
+    // Startup systems
+    .add_startup_system(camera::spawn.system())
+    ////* Loading module *////
     .add_system_set(
         SystemSet::on_enter(AppState::Loading)
             .with_system(loading::start_loading.system()),
@@ -46,8 +49,8 @@ pub fn run() {
     // Enter
     .add_system_set(
         SystemSet::on_enter(AppState::Game)
-            .with_system(game::overlord::spawn_overlord.system())
-            .with_system(game::world::spawn_world.system()),
+            .with_system(game::overlord::spawn.system())
+            .with_system(game::world::spawn.system()),
     )
     // Input
     .add_system_set(
@@ -63,15 +66,21 @@ pub fn run() {
             .after(game::SystemLabel::Input)
             .with_system(game::physics::movement.system()),
     )
+    // Camera movement
+    .add_system_set(
+        SystemSet::on_update(AppState::Game)
+            .after(game::SystemLabel::Physics)
+            .with_system(camera::movement.system()),
+    )
     // Player rotation mechanic
     .add_system_set(
         SystemSet::on_update(AppState::Game)
             .with_system(game::player::rotation.system()),
     )
-    // Spawn
+    // Spawner
     .add_system_set(
         SystemSet::on_update(AppState::Game)
-            .with_system(game::spawn::spawn.system()),
+            .with_system(game::spawner::spawn.system()),
     )
     // Exit
     .add_system_set(

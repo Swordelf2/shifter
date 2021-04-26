@@ -1,3 +1,5 @@
+//! Overlord is the entity that controls the game. It is the root of all
+//! non-camera entities in the `Game` state.
 use bevy::prelude::*;
 
 use crate::config::keybinds;
@@ -6,7 +8,7 @@ use crate::state::AppState;
 /// Marker component for the overlord entity
 pub struct Overlord;
 
-pub fn spawn_overlord(mut commands: Commands) {
+pub fn spawn(mut commands: Commands) {
     commands.spawn_bundle((
         Transform::default(),
         GlobalTransform::default(),

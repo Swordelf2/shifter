@@ -3,9 +3,9 @@ use bevy::prelude::*;
 use crate::config::{map, CELL_SIZE};
 use crate::{asset, menu};
 
-use super::spawn::Spawn;
+use super::spawner::Spawn;
 
-pub fn spawn_world(
+pub fn spawn(
     map_images: Res<asset::MapImages>,
     map_button: Res<menu::MapButton>,
     mut spawns: EventWriter<Spawn>,

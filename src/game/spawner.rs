@@ -11,20 +11,9 @@ use super::{overlord, physics, player};
 
 /// Spawn type, indicating which prefab to spawn
 pub enum Prefab {
-    Player(PlayerPrefab),
+    Player,
     Princess,
     Hazard,
-}
-
-/// Player prefab, with a camera attached to it by default
-pub struct PlayerPrefab {
-    with_camera: bool,
-}
-
-impl Default for PlayerPrefab {
-    fn default() -> Self {
-        Self { with_camera: true }
-    }
 }
 
 /// Spawn event, containing all common data between prefabs and the prefab itself
@@ -46,8 +35,8 @@ pub fn spawn(
     let mut overlord_new_children = Vec::new();
     for spawn in spawns.drain() {
         let new_child = match spawn.prefab {
-            Prefab::Player(player_prefab) => {
-                let mut entity = commands.spawn_bundle(SpriteBundle {
+            Prefab::Player => commands
+                .spawn_bundle(SpriteBundle {
                     material: material_handles.player.clone(),
                     transform: Transform::from_translation(Vec3::from((
                         spawn.position,
@@ -58,24 +47,10 @@ pub fn spawn(
                         2.0 * CELL_SIZE,
                     )),
                     ..Default::default()
-                });
-                entity.insert(player::Player).insert(
-                    physics::DynamicObject::new(Some(PLAYER_MAX_SPEED)),
-                );
-
-                if player_prefab.with_camera {
-                    // Spawn camera as a child to the player
-                    entity.with_children(|parent| {
-                        let mut camera = OrthographicCameraBundle::new_2d();
-                        // absolute z should be = `far` - `eps`
-                        // (camera only sees 1000.0 on z axis forward for some reason)
-                        camera.transform.translation.z =
-                            1000.0 - 0.5 - depths::PLAYER;
-                        parent.spawn_bundle(camera);
-                    });
-                }
-                entity.id()
-            }
+                })
+                .insert(player::Player)
+                .insert(physics::DynamicObject::new(Some(PLAYER_MAX_SPEED)))
+                .id(),
             Prefab::Princess => {
                 commands
                     .spawn_bundle(SpriteBundle {

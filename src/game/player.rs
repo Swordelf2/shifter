@@ -15,6 +15,7 @@ pub fn input(
     input: Res<Input<KeyCode>>,
     mut player_query: Query<(&mut DynamicObject, &Transform), With<Player>>,
 ) {
+    // TODO: add logging here
     let (mut dynamic_object, transform) = match player_query.single_mut() {
         Ok(dynamic_object) => dynamic_object,
         Err(QuerySingleError::NoEntities(_)) => return,
@@ -51,6 +52,7 @@ pub fn rotation(
     time: Res<Time>,
     mut player_query: Query<&mut Transform, With<Player>>,
 ) {
+    // TODO add logging here
     let mut transform = match player_query.single_mut() {
         Ok(transform) => transform,
         Err(QuerySingleError::NoEntities(_)) => return,

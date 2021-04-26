@@ -35,7 +35,6 @@ pub fn movement(
     mut dyn_object_query: Query<(&mut Transform, &mut DynamicObject)>,
 ) {
     for (mut transform, mut dynamic_object) in dyn_object_query.iter_mut() {
-        dbg!(&dynamic_object);
         let delta = time.delta_seconds();
 
         let dynamic_object = &mut *dynamic_object;

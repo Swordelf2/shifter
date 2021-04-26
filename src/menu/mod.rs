@@ -5,9 +5,6 @@ use bevy::prelude::*;
 use crate::asset::FontHandles;
 use crate::state::AppState;
 
-/// Marker component for the main menu UiCamera
-pub struct UiCamera;
-
 /// Component, indicating that this is one of the main menu buttons,
 /// choosing which map to load
 #[derive(Clone, Copy)]
@@ -26,11 +23,6 @@ pub fn setup(
     mut materials: ResMut<Assets<ColorMaterial>>,
     font_handles: Res<FontHandles>,
 ) {
-    // Ui camera
-    commands
-        .spawn_bundle(UiCameraBundle::default())
-        .insert(UiCamera);
-
     // Root of the menu entities hierarchy
     commands
         .spawn_bundle(NodeBundle::default())
@@ -124,17 +116,9 @@ pub fn update(
 }
 
 /// Cleanup upon exiting the state
-pub fn exit(
-    mut commands: Commands,
-    menu_query: Query<Entity, With<Menu>>,
-    camera_query: Query<Entity, With<UiCamera>>,
-) {
+pub fn exit(mut commands: Commands, menu_query: Query<Entity, With<Menu>>) {
     // Despawn the whole menu tree
     commands
         .entity(menu_query.single().unwrap())
-        .despawn_recursive();
-    // Despawn the camera
-    commands
-        .entity(camera_query.single().unwrap())
         .despawn_recursive();
 }

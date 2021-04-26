@@ -1,4 +1,5 @@
 mod asset;
+mod camera;
 mod config;
 mod game;
 mod loading;

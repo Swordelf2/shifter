@@ -2,7 +2,7 @@
 pub mod overlord;
 pub mod physics;
 pub mod player;
-pub mod spawn;
+pub mod spawner;
 pub mod world;
 
 mod label;

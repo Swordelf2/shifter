@@ -13,13 +13,13 @@ pub mod paths {
 }
 
 pub mod map {
-    use crate::game::spawn::Prefab;
+    use crate::game::spawner::Prefab;
 
     pub fn pixel2prefab(pixel: [u8; 3]) -> Option<Prefab> {
         match pixel {
             // Red = Princess
             [255, 0, 0] => Some(Prefab::Princess),
-            [0, 255, 0] => Some(Prefab::Player(Default::default())),
+            [0, 255, 0] => Some(Prefab::Player),
             [0, 0, 255] => Some(Prefab::Hazard),
             _ => None,
         }

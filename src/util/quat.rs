@@ -1,8 +1,6 @@
 use std::f32::consts::PI;
 
-use bevy::math::{Quat, Vec3};
-
-use crate::util::Vec3Ext;
+use bevy::math::Quat;
 
 /// Utility methods for 2d Quats/rotations
 pub trait QuatExt {
@@ -16,14 +14,7 @@ pub trait QuatExt {
 
 impl QuatExt for Quat {
     fn to_angle(&self) -> f32 {
-        let (axis, angle) = self.to_axis_angle();
-        assert!(
-            angle == 0.0 || Vec3Ext::collinear(axis, Vec3::new(0.0, 0.0, 1.0)),
-            "Axis-angle is not around Z axis, maybe look at `config::EPS`\n\
-            angle = {:?}, axis = {:?}",
-            angle,
-            axis
-        );
+        let (_axis, angle) = self.to_axis_angle();
         angle
     }
 
