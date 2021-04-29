@@ -4,43 +4,63 @@ use crate::asset;
 use crate::config::paths;
 use crate::state::AppState;
 
-use bevy::asset::LoadState;
+use bevy::asset::{Asset, LoadState};
 use bevy::prelude::*;
 
 /// Resource, used to keep track of all assets being loaded. Temporary, deleted
 /// upon exiting state
 pub struct HandlesToCheck(Vec<HandleUntyped>);
 
+// Loads an asset while adding it to `handles_to_check`
+fn load_asset<T: Asset>(
+    asset_path: &str,
+    asset_server: &AssetServer,
+    handles_to_check: &mut Vec<HandleUntyped>,
+) -> Handle<T> {
+    let handle = asset_server.load(asset_path);
+    handles_to_check.push(handle.clone_untyped());
+    handle
+}
+
 /* Systems */
 
 /// Start loading assets
 pub fn start_loading(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let mut handles: Vec<HandleUntyped> = Vec::new();
+    let mut handles_to_check: Vec<HandleUntyped> = Vec::new();
     // Textures
     {
-        let player = asset_server.load(paths::textures::PLAYER);
-        handles.push(player.clone_untyped());
-        let princess = asset_server.load(paths::textures::PRINCESS);
-        handles.push(princess.clone_untyped());
-        commands.insert_resource(asset::TextureHandles { player, princess });
+        commands.insert_resource(asset::TextureHandles {
+            player: load_asset(
+                paths::textures::PLAYER,
+                &asset_server,
+                &mut handles_to_check,
+            ),
+            princess: load_asset(
+                paths::textures::PRINCESS,
+                &asset_server,
+                &mut handles_to_check,
+            ),
+            maps: [load_asset(
+                paths::textures::MAPS[0],
+                &asset_server,
+                &mut handles_to_check,
+            )],
+        });
     }
     // Fonts
     {
-        let noto_sans_regular =
-            asset_server.load(paths::fonts::NOTO_SANS_REGULAR);
-        handles.push(noto_sans_regular.clone_untyped());
-        commands.insert_resource(asset::FontHandles { noto_sans_regular });
+        commands.insert_resource(asset::FontHandles {
+            noto_sans_regular: load_asset(
+                paths::fonts::NOTO_SANS_REGULAR,
+                &asset_server,
+                &mut handles_to_check,
+            ),
+        });
     }
 
-    commands.insert_resource(HandlesToCheck(handles));
+    commands.insert_resource(HandlesToCheck(handles_to_check));
 
-    // Map images
-    commands.insert_resource(asset::MapImages {
-        images: [
-            image::open(paths::MAPS[0]).unwrap().into_rgb8(),
-            image::open(paths::MAPS[1]).unwrap().into_rgb8(),
-        ],
-    })
+    // TODO load the svg from maps probably here
 }
 
 /// Check if all assets are loaded
@@ -57,15 +77,19 @@ pub fn check_loading(
         == LoadState::Loaded
     {
         commands.remove_resource::<HandlesToCheck>();
+
+        commands.insert_resource(asset::MaterialHandles {
+            player: materials
+                .add(ColorMaterial::from(texture_handles.player.clone())),
+            princess: materials
+                .add(ColorMaterial::from(texture_handles.princess.clone())),
+            hazard: materials
+                .add(ColorMaterial::from(Color::rgb(0.0, 0.0, 0.95))),
+            maps: [materials
+                .add(ColorMaterial::from(texture_handles.maps[0].clone()))],
+        });
+
         // Transition to the next state
         app_state.set(AppState::Menu).unwrap();
     }
-
-    commands.insert_resource(asset::MaterialHandles {
-        player: materials
-            .add(ColorMaterial::from(texture_handles.player.clone())),
-        princess: materials
-            .add(ColorMaterial::from(texture_handles.princess.clone())),
-        hazard: materials.add(ColorMaterial::from(Color::rgb(0.0, 0.0, 0.95))),
-    });
 }

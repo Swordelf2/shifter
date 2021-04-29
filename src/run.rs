@@ -10,13 +10,17 @@ pub fn run() {
 
     app.insert_resource(WindowDescriptor {
         title: "bevygame".to_string(),
-        width: 1024.0,
-        height: 1024.0,
+        width: 800.0,
+        height: 800.0,
         vsync: false,
         resizable: false,
         ..Default::default()
     })
-    .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
+    .insert_resource(ClearColor(Color::rgb(
+        0x79 as f32 / 255.0,
+        0xc0 as f32 / 255.0,
+        0xe9 as f32 / 255.0,
+    )))
     // Default plugins
     .add_plugins(DefaultPlugins)
     // State //

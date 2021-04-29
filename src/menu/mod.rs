@@ -9,7 +9,7 @@ use crate::state::AppState;
 /// choosing which map to load
 #[derive(Clone, Copy)]
 pub struct MapButton {
-    pub map_idx: usize,
+    pub map_id: usize,
 }
 
 /// Marker component for Main Menu
@@ -46,44 +46,11 @@ pub fn setup(
                         .add(ColorMaterial::from(Color::rgb(0.95, 0.95, 0.1))),
                     ..Default::default()
                 })
-                .insert(MapButton { map_idx: 0 })
+                .insert(MapButton { map_id: 0 })
                 .with_children(|parent| {
                     parent.spawn_bundle(TextBundle {
                         text: Text::with_section(
                             "Map1",
-                            TextStyle {
-                                font: font_handles.noto_sans_regular.clone(),
-                                font_size: 40.0,
-                                color: Color::rgb(0.9, 0.9, 0.9),
-                            },
-                            Default::default(),
-                        ),
-                        ..Default::default()
-                    });
-                });
-            // Second map button
-            parent
-                .spawn_bundle(ButtonBundle {
-                    style: Style {
-                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-                        // center button
-                        margin: Rect::all(Val::Auto),
-                        // horizontally center child text
-                        justify_content: JustifyContent::Center,
-                        // vertically center child text
-                        align_items: AlignItems::Center,
-                        ..Default::default()
-                    },
-                    // TODO this should be in impl FromWorld for a resource
-                    material: materials
-                        .add(ColorMaterial::from(Color::rgb(0.95, 0.95, 0.1))),
-                    ..Default::default()
-                })
-                .insert(MapButton { map_idx: 1 })
-                .with_children(|parent| {
-                    parent.spawn_bundle(TextBundle {
-                        text: Text::with_section(
-                            "Map2",
                             TextStyle {
                                 font: font_handles.noto_sans_regular.clone(),
                                 font_size: 40.0,

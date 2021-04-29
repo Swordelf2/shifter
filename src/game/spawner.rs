@@ -13,14 +13,18 @@ use super::{overlord, physics, player};
 pub enum Prefab {
     Player,
     Princess,
-    Hazard,
+    WorldMap(WorldMapPrefab),
+}
+
+/// WorldMap prefab, containing the world map's info, required for
+/// initializing, such as map id
+pub struct WorldMapPrefab {
+    pub map_id: usize,
 }
 
 /// Spawn event, containing all common data between prefabs and the prefab itself
 pub struct Spawn {
-    // Transform components
     pub position: Vec2,
-
     pub prefab: Prefab,
 }
 
@@ -65,20 +69,18 @@ pub fn spawn(
                     .id()
                 //.insert(Princess or smth)
             }
-            Prefab::Hazard => {
-                commands
-                    .spawn_bundle(SpriteBundle {
-                        material: material_handles.hazard.clone(),
-                        transform: Transform::from_translation(Vec3::from((
-                            spawn.position,
-                            depths::HAZARD,
-                        ))),
-                        sprite: Sprite::new(Vec2::new(CELL_SIZE, CELL_SIZE)),
-                        ..Default::default()
-                    })
-                    .id()
-                //.insert(Hazard or smth)
-            }
+            Prefab::WorldMap(world_map_prefab) => commands
+                .spawn_bundle(SpriteBundle {
+                    material: material_handles.maps[world_map_prefab.map_id]
+                        .clone(),
+                    transform: Transform::from_translation(Vec3::from((
+                        spawn.position,
+                        depths::WORLD_MAP,
+                    ))),
+                    sprite: Sprite::new(Vec2::new(1600.0, 1600.0)),
+                    ..Default::default()
+                })
+                .id(),
         };
 
         overlord_new_children.push(new_child);

@@ -1,10 +1,9 @@
 /// Asset paths
 pub mod paths {
-    pub const MAPS: [&str; 2] = ["assets/map1.png", "assets/map2.png"];
-
     pub mod textures {
         pub const PLAYER: &str = "textures/player.png";
         pub const PRINCESS: &str = "textures/princess.png";
+        pub const MAPS: [&str; crate::config::maps::COUNT] = ["maps/map1.png"];
     }
 
     pub mod fonts {
@@ -12,18 +11,8 @@ pub mod paths {
     }
 }
 
-pub mod map {
-    use crate::game::spawner::Prefab;
-
-    pub fn pixel2prefab(pixel: [u8; 3]) -> Option<Prefab> {
-        match pixel {
-            // Red = Princess
-            [255, 0, 0] => Some(Prefab::Princess),
-            [0, 255, 0] => Some(Prefab::Player),
-            [0, 0, 255] => Some(Prefab::Hazard),
-            _ => None,
-        }
-    }
+pub mod maps {
+    pub const COUNT: usize = 1;
 }
 
 /// Controls
@@ -63,5 +52,5 @@ pub mod physics {
 pub mod depths {
     pub const PLAYER: f32 = 0.1;
     pub const PRINCESS: f32 = 0.1;
-    pub const HAZARD: f32 = 0.0;
+    pub const WORLD_MAP: f32 = 0.0;
 }
