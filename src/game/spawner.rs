@@ -4,7 +4,7 @@
 use bevy::app::Events;
 use bevy::prelude::*;
 
-use crate::asset::MaterialHandles;
+use crate::asset;
 use crate::config::{depths, CELL_SIZE, PLAYER_MAX_SPEED};
 
 use super::{overlord, physics, player};
@@ -32,7 +32,7 @@ pub struct Spawn {
 pub fn spawn(
     mut commands: Commands,
     mut spawns: ResMut<Events<Spawn>>,
-    material_handles: Res<MaterialHandles>,
+    material_handles: Res<asset::MaterialHandles>,
     overlord_query: Query<Entity, With<overlord::Overlord>>,
 ) {
     // Everything that spawns in the `game` should be inserted into overlord's children
@@ -41,7 +41,9 @@ pub fn spawn(
         let new_child = match spawn.prefab {
             Prefab::Player => commands
                 .spawn_bundle(SpriteBundle {
-                    material: material_handles.player.clone(),
+                    material: material_handles.handles
+                        [&asset::ObjectLabel::Player]
+                        .clone(),
                     transform: Transform::from_translation(Vec3::from((
                         spawn.position,
                         depths::PLAYER,
@@ -58,7 +60,9 @@ pub fn spawn(
             Prefab::Princess => {
                 commands
                     .spawn_bundle(SpriteBundle {
-                        material: material_handles.princess.clone(),
+                        material: material_handles.handles
+                            [&asset::ObjectLabel::Princess]
+                            .clone(),
                         transform: Transform::from_translation(Vec3::from((
                             spawn.position,
                             depths::PRINCESS,
@@ -69,18 +73,26 @@ pub fn spawn(
                     .id()
                 //.insert(Princess or smth)
             }
-            Prefab::WorldMap(world_map_prefab) => commands
-                .spawn_bundle(SpriteBundle {
-                    material: material_handles.maps[world_map_prefab.map_id]
-                        .clone(),
-                    transform: Transform::from_translation(Vec3::from((
-                        spawn.position,
-                        depths::WORLD_MAP,
-                    ))),
-                    sprite: Sprite::new(Vec2::new(1600.0, 1600.0)),
-                    ..Default::default()
-                })
-                .id(),
+            Prefab::WorldMap(world_map_prefab) => {
+                let material = match world_map_prefab.map_id {
+                    0 => {
+                        &material_handles.handles
+                            [&asset::ObjectLabel::WorldMap1]
+                    }
+                    _ => unreachable!(),
+                };
+                commands
+                    .spawn_bundle(SpriteBundle {
+                        material: material.clone(),
+                        transform: Transform::from_translation(Vec3::from((
+                            spawn.position,
+                            depths::WORLD_MAP,
+                        ))),
+                        sprite: Sprite::new(Vec2::new(1600.0, 1600.0)),
+                        ..Default::default()
+                    })
+                    .id()
+            }
         };
 
         overlord_new_children.push(new_child);

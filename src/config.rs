@@ -1,20 +1,3 @@
-/// Asset paths
-pub mod paths {
-    pub mod textures {
-        pub const PLAYER: &str = "textures/player.png";
-        pub const PRINCESS: &str = "textures/princess.png";
-        pub const MAPS: [&str; crate::config::maps::COUNT] = ["maps/map1.png"];
-    }
-
-    pub mod fonts {
-        pub const NOTO_SANS_REGULAR: &str = "fonts/NotoSans-Regular.ttf";
-    }
-}
-
-pub mod maps {
-    pub const COUNT: usize = 1;
-}
-
 /// Controls
 pub mod keybinds {
     use bevy::input::keyboard::KeyCode;

@@ -11,6 +11,7 @@ debug = ["bevy-inspector-egui"]
 [dependencies]
 bevy = "0.5"
 bevy-inspector-egui = {version = "0.4.1", optional = true}
+strum = { version = "0.20", features = ["derive"] }
 
 # Enable optimizations for dependencies (incl. Bevy), but not for our code:
 [profile.dev.package."*"]

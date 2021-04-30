@@ -2,7 +2,7 @@
 
 use bevy::prelude::*;
 
-use crate::asset::FontHandles;
+use crate::asset;
 use crate::state::AppState;
 
 /// Component, indicating that this is one of the main menu buttons,
@@ -21,7 +21,7 @@ pub struct Menu;
 pub fn setup(
     mut commands: Commands,
     mut materials: ResMut<Assets<ColorMaterial>>,
-    font_handles: Res<FontHandles>,
+    font_handles: Res<asset::FontHandles>,
 ) {
     // Root of the menu entities hierarchy
     commands
@@ -52,7 +52,9 @@ pub fn setup(
                         text: Text::with_section(
                             "Map1",
                             TextStyle {
-                                font: font_handles.noto_sans_regular.clone(),
+                                font: font_handles.handles
+                                    [&asset::FontLabel::NotoSansRegular]
+                                    .clone(),
                                 font_size: 40.0,
                                 color: Color::rgb(0.9, 0.9, 0.9),
                             },
