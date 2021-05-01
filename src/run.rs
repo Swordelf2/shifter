@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{camera, game, loading, menu, state::AppState};
+use crate::{asset, camera, game, loading, menu, state::AppState};
 
 #[cfg(feature = "debug")]
 use crate::debug;
@@ -23,6 +23,9 @@ pub fn run() {
     )))
     // Default plugins
     .add_plugins(DefaultPlugins)
+    // SvgData custom asset and loader
+    .add_asset::<asset::SvgData>()
+    .init_asset_loader::<asset::svgdata::SvgDataLoader>()
     // State //
     .add_state(AppState::Loading)
     // Events
@@ -33,11 +36,11 @@ pub fn run() {
     ////* Loading module *////
     .add_system_set(
         SystemSet::on_enter(AppState::Loading)
-            .with_system(loading::start_loading.system()),
+            .with_system(loading::start_loading_assets.system()),
     )
     .add_system_set(
         SystemSet::on_update(AppState::Loading)
-            .with_system(loading::check_loading.system()),
+            .with_system(loading::check_loading_assets.system()),
     )
     ////* Menu module *////
     .add_system_set(

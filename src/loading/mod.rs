@@ -1,12 +1,14 @@
 //! Loading state must load all resources, and transition into the next state
 //! upon completion
+use std::collections::HashMap;
+
 use crate::asset;
 use crate::state::AppState;
 
 use bevy::asset::LoadState;
 use bevy::prelude::*;
 
-use strum::IntoEnumIterator;
+use strum::{EnumCount, IntoEnumIterator};
 
 /// Resource, used to keep track of all assets being loaded. Temporary, deleted
 /// upon exiting state
@@ -15,44 +17,58 @@ pub struct HandlesToCheck(Vec<HandleUntyped>);
 /* Systems */
 
 /// Start loading assets
-pub fn start_loading(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn start_loading_assets(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+) {
     let mut handles_to_check: Vec<HandleUntyped> = Vec::new();
-    // Textures
-    // Iterate over all object labels and load their texture
+    // Textures and svg data
+    // Iterate over all object labels and load their texture and svg data
+    let mut texture_handles: HashMap<asset::ObjectLabel, Handle<Texture>> =
+        HashMap::with_capacity(asset::ObjectLabel::COUNT);
+    let mut svg_data_handles: HashMap<
+        asset::ObjectLabel,
+        Handle<asset::SvgData>,
+    > = HashMap::with_capacity(asset::ObjectLabel::COUNT);
+    for object_label in asset::ObjectLabel::iter() {
+        let texture_handle = asset_server
+            .load(asset::object_label_to_texture_path(object_label));
+        handles_to_check.push(texture_handle.clone_untyped());
+        texture_handles.insert(object_label, texture_handle);
+
+        if let Some(svg_data_path) =
+            asset::object_label_to_svg_path(object_label)
+        {
+            let svg_data_handle = asset_server.load(svg_data_path);
+            handles_to_check.push(svg_data_handle.clone_untyped());
+            svg_data_handles.insert(object_label, svg_data_handle);
+        }
+    }
     commands.insert_resource(asset::TextureHandles {
-        handles: asset::ObjectLabel::iter()
-            .map(|object_label| {
-                let mut path = asset::object_label_to_path(object_label);
-                path.set_extension("png");
-                let handle = asset_server.load(path);
-                handles_to_check.push(handle.clone_untyped());
-                (object_label, handle)
-            })
-            .collect(),
+        handles: texture_handles,
+    });
+    commands.insert_resource(asset::SvgDataHandles {
+        handles: svg_data_handles,
     });
 
     // Fonts
-    // Iterate over all font labels and load the font
-    {
-        commands.insert_resource(asset::FontHandles {
-            handles: asset::FontLabel::iter()
-                .map(|font_label| {
-                    let path = asset::font_label_to_path(font_label);
-                    let handle = asset_server.load(path);
-                    handles_to_check.push(handle.clone_untyped());
-                    (font_label, handle)
-                })
-                .collect(),
-        });
+    let mut font_handles: HashMap<asset::FontLabel, Handle<Font>> =
+        HashMap::with_capacity(asset::FontLabel::COUNT);
+    for font_label in asset::FontLabel::iter() {
+        let font_handle =
+            asset_server.load(asset::font_label_to_path(font_label));
+        handles_to_check.push(font_handle.clone_untyped());
+        font_handles.insert(font_label, font_handle);
     }
+    commands.insert_resource(asset::FontHandles {
+        handles: font_handles,
+    });
 
     commands.insert_resource(HandlesToCheck(handles_to_check));
-
-    // TODO load the svg from maps probably here
 }
 
 /// Check if all assets are loaded
-pub fn check_loading(
+pub fn check_loading_assets(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     handles_to_check: Res<HandlesToCheck>,

@@ -9,6 +9,7 @@ edition = "2018"
 debug = ["bevy-inspector-egui"]
 
 [dependencies]
+anyhow = "1.0"
 bevy = "0.5"
 bevy-inspector-egui = {version = "0.4.1", optional = true}
 strum = { version = "0.20", features = ["derive"] }

@@ -21,7 +21,7 @@ pub const PLAYER_ACCEL: f32 = 5.0 * CELL_SIZE;
 /// Player maximum speed
 pub const PLAYER_MAX_SPEED: f32 = 10.0 * CELL_SIZE;
 /// Player rotation speed
-pub const ROTATION_SPEED: f32 = 1.0;
+pub const ROTATION_SPEED: f32 = 0.0;
 
 pub const EPS: f32 = 1e-6;
 
