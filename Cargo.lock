@@ -2962,6 +2962,7 @@ dependencies = [
  "bevy",
  "bevy-inspector-egui",
  "strum",
+ "svg",
 ]
 
 [[package]]
@@ -3160,6 +3161,12 @@ dependencies = [
  "quote",
  "syn",
 ]
+
+[[package]]
+name = "svg"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a95656b5b37251de210aa2751d538b6f31ce375bacf725a32223bfa6344e0776"
 
 [[package]]
 name = "svg_fmt"

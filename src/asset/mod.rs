@@ -27,7 +27,7 @@ pub fn object_label_to_texture_path(
     Path::new(match object_label {
         ObjectLabel::Player => "textures/player.png",
         ObjectLabel::Princess => "textures/princess.png",
-        ObjectLabel::WorldMap1 => "maps/map1.png",
+        ObjectLabel::WorldMap1 => "textures/map1.png",
     })
 }
 
@@ -35,8 +35,9 @@ pub fn object_label_to_svg_path(
     object_label: ObjectLabel,
 ) -> Option<&'static Path> {
     match object_label {
-        ObjectLabel::WorldMap1 => Some(Path::new("maps/map1.svg")),
-        _ => None,
+        ObjectLabel::Player => Some(Path::new("textures/player.svg")),
+        ObjectLabel::Princess => Some(Path::new("textures/princess.svg")),
+        ObjectLabel::WorldMap1 => Some(Path::new("textures/map1.svg")),
     }
 }
 

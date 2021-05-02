@@ -1,14 +1,18 @@
 use bevy::prelude::*;
 
+use crate::asset::{SvgData, SvgDataHandles};
+
 pub fn test_system(
-    player_query: Query<&Transform, With<crate::game::player::Player>>,
+    svg_data: Res<Assets<SvgData>>,
+    svg_data_handles: Option<Res<SvgDataHandles>>,
 ) {
-    for transform in player_query.iter() {
-        dbg!(transform.rotation.to_axis_angle());
+    if let Some(svg_data_handles) = svg_data_handles {
+        for (object_label, svg_data_handle) in &svg_data_handles.handles {
+            println!(
+                "{:?}:::: {:?}",
+                object_label,
+                svg_data.get(svg_data_handle).unwrap(),
+            );
+        }
     }
 }
-// TODO
-pub fn print_all_cameras() {}
-
-// TODO
-pub fn print_all_entities() {}

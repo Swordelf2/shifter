@@ -37,3 +37,12 @@ pub mod depths {
     pub const PRINCESS: f32 = 0.1;
     pub const WORLD_MAP: f32 = 0.0;
 }
+
+/// These constants are used for svg conversions
+pub mod conversion {
+    const PX_PER_INCH: f32 = 96.0;
+    const MM_PER_INCH: f32 = 25.4;
+    const PX_PER_MM: f32 = PX_PER_INCH / MM_PER_INCH;
+    /// Multiply svg coords by this constant to get in-app units
+    pub const SVG_TO_UNITS: f32 = PX_PER_MM;
+}
