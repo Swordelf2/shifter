@@ -1,4 +1,4 @@
-//! Game state describes the actual gameplay of the app
+//! Game state is responsible for the actual gameplay of the app
 pub mod overlord;
 pub mod physics;
 pub mod player;

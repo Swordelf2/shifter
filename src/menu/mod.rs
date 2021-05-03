@@ -1,4 +1,4 @@
-//! Menu state describes main menu of the app
+//! Menu state is responsible for the main menu of the app
 
 use bevy::prelude::*;
 

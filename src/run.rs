@@ -98,6 +98,8 @@ pub fn run() {
     ////* Debug module *////
     #[cfg(feature = "debug")]
     {
+        app.add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin);
+
         app.add_plugin(bevy_inspector_egui::WorldInspectorPlugin::new())
             .add_system(debug::test_system.system());
 

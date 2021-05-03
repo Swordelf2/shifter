@@ -2,7 +2,8 @@ use bevy::ecs::system::QuerySingleError;
 use bevy::math::Mat2;
 use bevy::prelude::*;
 
-use crate::config::{keybinds, PLAYER_ACCEL, ROTATION_SPEED};
+use crate::config;
+use crate::config::{keybinds, ROTATION_SPEED};
 use crate::util::QuatExt;
 
 use super::physics::DynamicObject;
@@ -44,7 +45,7 @@ pub fn input(
     let accel =
         Mat2::from_angle(QuatExt::to_angle(&transform.rotation)) * accel;
     // Multiply by the accel value and assign
-    dynamic_object.accel = accel * PLAYER_ACCEL;
+    dynamic_object.accel = accel * config::physics::PLAYER_ACCEL;
 }
 
 /// Move player in response to player actions

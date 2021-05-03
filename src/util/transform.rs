@@ -5,32 +5,48 @@ use super::QuatExt;
 /// Utility methods for 2D `Transform`s
 /// TODO: nothing here is used yet, maybe remove
 pub trait TransformExt {
-    /// Return forward direction
+    /// Returns forward direction
     fn forward(&self) -> Vec2;
+    /// Returns left direction
     fn left(&self) -> Vec2;
+    /// Returns right direction
     fn right(&self) -> Vec2;
+    /// Returns backward direction
     fn backward(&self) -> Vec2;
+
+    /// Returns transform, with scale multiplied by `scale`
+    fn scaled(self, scale_factor: Vec2) -> Self;
 }
 
 impl TransformExt for Transform {
+    #[inline]
     fn forward(&self) -> Vec2 {
         let angle = QuatExt::to_angle(&self.rotation);
         Vec2::new(-angle.sin(), angle.cos())
     }
 
+    #[inline]
     fn left(&self) -> Vec2 {
         let angle = QuatExt::to_angle(&self.rotation);
         Vec2::new(-angle.cos(), -angle.sin())
     }
 
+    #[inline]
     fn backward(&self) -> Vec2 {
         let angle = QuatExt::to_angle(&self.rotation);
         Vec2::new(angle.sin(), -angle.cos())
     }
 
+    #[inline]
     fn right(&self) -> Vec2 {
         let angle = QuatExt::to_angle(&self.rotation);
         Vec2::new(angle.cos(), angle.sin())
+    }
+
+    fn scaled(mut self, scale_factor: Vec2) -> Self {
+        self.scale.x *= scale_factor.x;
+        self.scale.y *= scale_factor.y;
+        self
     }
 }
 

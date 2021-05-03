@@ -6,7 +6,9 @@ use bevy::prelude::*;
 
 use crate::asset;
 use crate::asset::svgdata;
-use crate::config::{depths, CELL_SIZE, PLAYER_MAX_SPEED};
+use crate::config;
+use crate::config::{depths, sizes};
+use crate::util::TransformExt;
 
 use super::{overlord, physics, player};
 
@@ -29,17 +31,6 @@ pub struct Spawn {
     pub prefab: Prefab,
 }
 
-#[inline]
-fn get_svg_data<'a>(
-    object_label: asset::ObjectLabel,
-    svg_datas: &'a Assets<asset::SvgData>,
-    svg_data_handles: &asset::SvgDataHandles,
-) -> &'a asset::SvgData {
-    svg_datas
-        .get(&svg_data_handles.handles[&object_label])
-        .unwrap()
-}
-
 /// Read (consume) spawn events and spawn corresponding prefabs
 pub fn spawn(
     mut commands: Commands,
@@ -54,11 +45,9 @@ pub fn spawn(
     for spawn in spawns.drain() {
         let new_child = match spawn.prefab {
             Prefab::Player => {
-                let svg_data = get_svg_data(
-                    asset::ObjectLabel::Player,
-                    &svg_datas,
-                    &svg_data_handles,
-                );
+                let svg_data = svg_datas
+                    .get(&svg_data_handles.handles[&asset::ObjectLabel::Player])
+                    .unwrap();
                 commands
                     .spawn_bundle(SpriteBundle {
                         material: material_handles.handles
@@ -67,21 +56,27 @@ pub fn spawn(
                         transform: Transform::from_translation(Vec3::from((
                             spawn.position,
                             depths::PLAYER,
-                        ))),
-                        sprite: Sprite::new(Vec2::new(
-                            2.0 * CELL_SIZE,
-                            2.0 * CELL_SIZE,
-                        )),
+                        )))
+                        .scaled(sizes::PLAYER / svg_data.size),
+                        sprite: Sprite::new(svg_data.size),
                         ..Default::default()
                     })
                     .insert(player::Player)
-                    .insert(physics::DynamicObject::new(Some(PLAYER_MAX_SPEED)))
-                    .insert(physics::Collider::from_shapes(
+                    .insert(physics::DynamicObject::from_max_vel(
+                        config::physics::PLAYER_MAX_VEL,
+                    ))
+                    .insert(physics::Collider::solid_from_shapes(
                         svg_data.groups[svgdata::COLLISION].clone(),
                     ))
                     .id()
             }
             Prefab::Princess => {
+                let svg_data = svg_datas
+                    .get(
+                        &svg_data_handles.handles
+                            [&asset::ObjectLabel::Princess],
+                    )
+                    .unwrap();
                 commands
                     .spawn_bundle(SpriteBundle {
                         material: material_handles.handles
@@ -90,19 +85,29 @@ pub fn spawn(
                         transform: Transform::from_translation(Vec3::from((
                             spawn.position,
                             depths::PRINCESS,
-                        ))),
-                        sprite: Sprite::new(Vec2::new(CELL_SIZE, CELL_SIZE)),
+                        )))
+                        .scaled(sizes::PRINCESS / svg_data.size),
+                        sprite: Sprite::new(svg_data.size),
                         ..Default::default()
                     })
+                    .insert(physics::Collider::nonsolid_from_shapes(
+                        svg_data.groups[svgdata::COLLISION].clone(),
+                    ))
                     .id()
                 //.insert(Princess or smth)
             }
             Prefab::WorldMap(world_map_prefab) => {
-                let material = match world_map_prefab.map_id {
-                    0 => {
+                let (material, svg_data) = match world_map_prefab.map_id {
+                    0 => (
                         &material_handles.handles
-                            [&asset::ObjectLabel::WorldMap1]
-                    }
+                            [&asset::ObjectLabel::WorldMap1],
+                        svg_datas
+                            .get(
+                                &svg_data_handles.handles
+                                    [&asset::ObjectLabel::WorldMap1],
+                            )
+                            .unwrap(),
+                    ),
                     _ => unreachable!(),
                 };
                 commands
@@ -111,8 +116,9 @@ pub fn spawn(
                         transform: Transform::from_translation(Vec3::from((
                             spawn.position,
                             depths::WORLD_MAP,
-                        ))),
-                        sprite: Sprite::new(Vec2::new(1600.0, 1600.0)),
+                        )))
+                        .scaled(sizes::WORLD_MAP1 / svg_data.size),
+                        sprite: Sprite::new(svg_data.size),
                         ..Default::default()
                     })
                     .id()

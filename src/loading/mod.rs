@@ -1,4 +1,4 @@
-//! Loading state must load all resources, and transition into the next state
+//! Loading state is responsible for loading assets, and transitioning into the next state
 //! upon completion
 use std::collections::HashMap;
 

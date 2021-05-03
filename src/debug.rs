@@ -1,18 +1,15 @@
 use bevy::prelude::*;
 
-use crate::asset::{SvgData, SvgDataHandles};
+use crate::game::physics::Collider;
+use crate::game::player::Player;
 
-pub fn test_system(
-    svg_data: Res<Assets<SvgData>>,
-    svg_data_handles: Option<Res<SvgDataHandles>>,
-) {
-    if let Some(svg_data_handles) = svg_data_handles {
-        for (object_label, svg_data_handle) in &svg_data_handles.handles {
-            println!(
-                "{:?}:::: {:?}",
-                object_label,
-                svg_data.get(svg_data_handle).unwrap(),
-            );
+pub fn test_system(player_query: Query<&Collider, With<Player>>) {
+    if let Ok(collider) = player_query.single() {
+        let recent_collisions = collider.get_recent_collisions();
+        if recent_collisions.len() == 0 {
+            println!("Not colliding");
+        } else {
+            println!("Colliding with {:?}", recent_collisions[0].entity);
         }
     }
 }

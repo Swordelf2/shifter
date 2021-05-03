@@ -43,6 +43,19 @@
        r="13.229166"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1.1021193,-1.5594976e-5,1.6322268e-5,1.153644,-1.4001223,-2.806177)" />
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter857"
+       x="-0.026227658"
+       width="1.0524553"
+       y="-0.026227658"
+       height="1.0524553">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.28914171"
+         id="feGaussianBlur859" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -53,7 +66,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="8"
      inkscape:cx="55.23935"
-     inkscape:cy="51.132844"
+     inkscape:cy="56.132844"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -74,7 +87,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -83,7 +96,7 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:url(#radialGradient2178);fill-opacity:1;stroke:none;stroke-width:0.261158px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:url(#radialGradient2178);fill-opacity:1;stroke:#ffffff;stroke-width:0.261158px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter857)"
        d="M 0,26.458333 H 26.458333 L 13.229166,0 Z"
        id="path2168"
        sodipodi:nodetypes="cccc" />
@@ -92,7 +105,8 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="data"
-     style="display:none">
+     style="display:none"
+     sodipodi:insensitive="true">
     <g
        id="g2188"
        inkscape:label="collision">

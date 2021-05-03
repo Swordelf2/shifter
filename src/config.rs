@@ -14,12 +14,6 @@ pub mod keybinds {
     }
 }
 
-/// Cell size in pixels
-pub const CELL_SIZE: f32 = 32.0;
-/// Player acceleration
-pub const PLAYER_ACCEL: f32 = 5.0 * CELL_SIZE;
-/// Player maximum speed
-pub const PLAYER_MAX_SPEED: f32 = 10.0 * CELL_SIZE;
 /// Player rotation speed
 pub const ROTATION_SPEED: f32 = 0.0;
 
@@ -28,14 +22,27 @@ pub const EPS: f32 = 1e-6;
 pub mod physics {
     /// No physical object in the game can exceed this speed
     /// All speeds are in (world points)/second
-    pub const GLOBAL_MAX_SPEED: f32 = 200.0;
+    pub const GLOBAL_MAX_VEL: f32 = 500.0;
+    /// Player acceleration
+    pub const PLAYER_ACCEL: f32 = 160.0;
+    /// Player maximum speed
+    pub const PLAYER_MAX_VEL: f32 = 320.0;
 }
 
 /// Z depths of entities
 pub mod depths {
-    pub const PLAYER: f32 = 0.1;
-    pub const PRINCESS: f32 = 0.1;
+    pub const PLAYER: f32 = 2.0;
+    pub const PRINCESS: f32 = 1.0;
     pub const WORLD_MAP: f32 = 0.0;
+}
+
+/// Sizes of entities
+pub mod sizes {
+    use bevy::math::{const_vec2, Vec2};
+
+    pub const PLAYER: Vec2 = const_vec2!([64.0, 64.0]);
+    pub const PRINCESS: Vec2 = const_vec2!([200.0, 200.0]);
+    pub const WORLD_MAP1: Vec2 = const_vec2!([1600.0, 1600.0]);
 }
 
 /// These constants are used for svg conversions
