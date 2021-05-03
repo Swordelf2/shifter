@@ -71,7 +71,7 @@ pub fn run() {
         SystemSet::on_update(AppState::Game)
             .label(game::SystemLabel::Physics)
             .after(game::SystemLabel::Input)
-            .with_system(game::physics::movement.system()),
+            .with_system(game::physics::update.system()),
     )
     // Camera movement
     .add_system_set(
@@ -100,6 +100,13 @@ pub fn run() {
     {
         app.add_plugin(bevy_inspector_egui::WorldInspectorPlugin::new())
             .add_system(debug::test_system.system());
+
+        // Register components with `bevy_inspector_egui`
+        let mut registry = app.world_mut().get_resource_or_insert_with(
+            bevy_inspector_egui::InspectableRegistry::default,
+        );
+        registry.register::<game::physics::DynamicObject>();
+        registry.register::<game::physics::Collider>();
     }
 
     app.run();

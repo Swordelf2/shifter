@@ -1,5 +1,6 @@
 //! All svgs are assumed to have a seperate layer called `data`, which contains
 //! groups of paths such as `collision` and `player_start_pos`
+use std::collections::HashMap;
 
 use svg::node::element::path::{Command, Data, Position};
 use svg::node::element::tag;
@@ -18,8 +19,8 @@ use crate::util::shape::{CircleShape, PolyShape, Shape};
 #[derive(Default, Debug, TypeUuid)]
 #[uuid = "737b3336-aa6f-11eb-bcbc-0242ac130002"]
 pub struct SvgData {
-    size: Vec2,
-    groups: Vec<(String, Vec<Shape>)>,
+    pub size: Vec2,
+    pub groups: HashMap<String, Vec<Shape>>,
 }
 
 #[derive(Default)]
@@ -27,6 +28,8 @@ pub struct SvgDataLoader;
 
 const LABEL_ATTR: &'static str = "inkscape:label";
 const DATA_LABEL: &'static str = "data";
+
+pub const COLLISION: &'static str = "collision";
 
 enum State {
     OutsideData,
@@ -45,7 +48,7 @@ impl AssetLoader for SvgDataLoader {
             let parser =
                 svg::read(std::str::from_utf8(bytes).unwrap()).unwrap();
             let mut size: Option<Vec2> = None;
-            let mut groups: Vec<(String, Vec<Shape>)> = Vec::new();
+            let mut groups: HashMap<String, Vec<Shape>> = HashMap::new();
             let mut state = State::OutsideData;
             let mut cur_group_name: Option<String> = None;
             let mut cur_group: Option<Vec<Shape>> = None;
@@ -61,11 +64,19 @@ impl AssetLoader for SvgDataLoader {
                         if let Some(group_label) = attr.get(LABEL_ATTR) {
                             match state {
                                 State::OutsideData => {
+                                    assert!(
+                                        attr.get("transform").is_none(),
+                                        "Transform attribute present in svg"
+                                    );
                                     if **group_label == *DATA_LABEL {
                                         state = State::InsideData;
                                     }
                                 }
                                 State::InsideData => {
+                                    assert!(
+                                        attr.get("transform").is_none(),
+                                        "Transform attribute present in svg"
+                                    );
                                     // Start new group
                                     cur_group_name =
                                         Some(String::from(&**group_label));
@@ -86,10 +97,10 @@ impl AssetLoader for SvgDataLoader {
                             }
                             State::InsideGroup => {
                                 // Finish the current group
-                                groups.push((
+                                groups.insert(
                                     cur_group_name.take().unwrap(),
                                     cur_group.take().unwrap(),
-                                ));
+                                );
                                 state = State::InsideData;
                             }
                         }
@@ -101,6 +112,10 @@ impl AssetLoader for SvgDataLoader {
                                 panic!("path in data without a group");
                             }
                             State::InsideGroup => {
+                                assert!(
+                                    attr.get("transform").is_none(),
+                                    "Transform attribute present in svg"
+                                );
                                 // Add the path to the current group
                                 cur_group.as_mut().unwrap().push(
                                     path_to_shape(
@@ -118,6 +133,10 @@ impl AssetLoader for SvgDataLoader {
                             panic!("circle in data without a group");
                         }
                         State::InsideGroup => {
+                            assert!(
+                                attr.get("transform").is_none(),
+                                "Transform attribute present in svg"
+                            );
                             cur_group.as_mut().unwrap().push(Shape::Circle(
                                 CircleShape {
                                     radius: attr
@@ -127,7 +146,7 @@ impl AssetLoader for SvgDataLoader {
                                         .unwrap()
                                         * SVG_TO_UNITS,
                                     center: to_centered(
-                                        dbg!(Vec2::new(
+                                        Vec2::new(
                                             attr.get("cx")
                                                 .unwrap()
                                                 .parse()
@@ -136,7 +155,7 @@ impl AssetLoader for SvgDataLoader {
                                                 .unwrap()
                                                 .parse()
                                                 .unwrap(),
-                                        )),
+                                        ),
                                         size.unwrap(),
                                     ),
                                 },

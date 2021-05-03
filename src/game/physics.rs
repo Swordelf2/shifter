@@ -1,9 +1,11 @@
 use bevy::prelude::*;
 
 use crate::config::physics;
+use crate::util::shape::{CircleShape, PolyShape, Shape};
 
 /// Component, indicating that this entity can move and collide with colliders
 #[derive(Debug)]
+#[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
 pub struct DynamicObject {
     /// Aceleration
     pub accel: Vec2,
@@ -29,8 +31,34 @@ impl DynamicObject {
     }
 }
 
-/// Main physics system, moves all dynamic
-pub fn movement(
+/// Component, indicating that this entity can collide with other colliders
+#[derive(Debug, Default)]
+#[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
+pub struct Collider {
+    /// Non-transformed ('static')
+    shapes: Vec<Shape>,
+    /// Entities this object has collided with in this frame
+    recent_collisions: Vec<Collision>,
+}
+
+/// Collision instance
+#[derive(Debug, Default)]
+#[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
+pub struct Collision {
+    // TODO
+}
+
+impl Collider {
+    pub fn from_shapes(shapes: Vec<Shape>) -> Self {
+        Self {
+            shapes,
+            recent_collisions: Vec::new(),
+        }
+    }
+}
+
+/// Main physics system, moves all dynamic objects and processes collisions
+pub fn update(
     time: Res<Time>,
     mut dyn_object_query: Query<(&mut Transform, &mut DynamicObject)>,
 ) {
@@ -51,5 +79,7 @@ pub fn movement(
         }
         // Apply the velocity
         transform.translation += Vec3::from((dynamic_object.vel, 0.0)) * delta;
+
+        // TODO collision
     }
 }

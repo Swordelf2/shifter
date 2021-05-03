@@ -5,6 +5,7 @@ use bevy::app::Events;
 use bevy::prelude::*;
 
 use crate::asset;
+use crate::asset::svgdata;
 use crate::config::{depths, CELL_SIZE, PLAYER_MAX_SPEED};
 
 use super::{overlord, physics, player};
@@ -28,35 +29,58 @@ pub struct Spawn {
     pub prefab: Prefab,
 }
 
+#[inline]
+fn get_svg_data<'a>(
+    object_label: asset::ObjectLabel,
+    svg_datas: &'a Assets<asset::SvgData>,
+    svg_data_handles: &asset::SvgDataHandles,
+) -> &'a asset::SvgData {
+    svg_datas
+        .get(&svg_data_handles.handles[&object_label])
+        .unwrap()
+}
+
 /// Read (consume) spawn events and spawn corresponding prefabs
 pub fn spawn(
     mut commands: Commands,
     mut spawns: ResMut<Events<Spawn>>,
     material_handles: Res<asset::MaterialHandles>,
+    svg_datas: Res<Assets<asset::SvgData>>,
+    svg_data_handles: Res<asset::SvgDataHandles>,
     overlord_query: Query<Entity, With<overlord::Overlord>>,
 ) {
     // Everything that spawns in the `game` should be inserted into overlord's children
     let mut overlord_new_children = Vec::new();
     for spawn in spawns.drain() {
         let new_child = match spawn.prefab {
-            Prefab::Player => commands
-                .spawn_bundle(SpriteBundle {
-                    material: material_handles.handles
-                        [&asset::ObjectLabel::Player]
-                        .clone(),
-                    transform: Transform::from_translation(Vec3::from((
-                        spawn.position,
-                        depths::PLAYER,
-                    ))),
-                    sprite: Sprite::new(Vec2::new(
-                        2.0 * CELL_SIZE,
-                        2.0 * CELL_SIZE,
-                    )),
-                    ..Default::default()
-                })
-                .insert(player::Player)
-                .insert(physics::DynamicObject::new(Some(PLAYER_MAX_SPEED)))
-                .id(),
+            Prefab::Player => {
+                let svg_data = get_svg_data(
+                    asset::ObjectLabel::Player,
+                    &svg_datas,
+                    &svg_data_handles,
+                );
+                commands
+                    .spawn_bundle(SpriteBundle {
+                        material: material_handles.handles
+                            [&asset::ObjectLabel::Player]
+                            .clone(),
+                        transform: Transform::from_translation(Vec3::from((
+                            spawn.position,
+                            depths::PLAYER,
+                        ))),
+                        sprite: Sprite::new(Vec2::new(
+                            2.0 * CELL_SIZE,
+                            2.0 * CELL_SIZE,
+                        )),
+                        ..Default::default()
+                    })
+                    .insert(player::Player)
+                    .insert(physics::DynamicObject::new(Some(PLAYER_MAX_SPEED)))
+                    .insert(physics::Collider::from_shapes(
+                        svg_data.groups[svgdata::COLLISION].clone(),
+                    ))
+                    .id()
+            }
             Prefab::Princess => {
                 commands
                     .spawn_bundle(SpriteBundle {
