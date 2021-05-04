@@ -1,5 +1,3 @@
-pub mod shape;
-
 mod quat;
 mod transform;
 mod vec;

@@ -6,6 +6,8 @@ use bevy::transform::components::Transform;
 
 use crate::util::Vec2Ext;
 
+use super::util::{update_max_point, update_min_point};
+
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
 pub enum Shape {
@@ -13,6 +15,7 @@ pub enum Shape {
     Poly(PolyShape),
 }
 
+// TODO probably should remove this Default, it's only here for the inspector
 impl Default for Shape {
     fn default() -> Self {
         Self::Poly(Default::default())
@@ -106,25 +109,5 @@ impl ShiftedShape {
 impl Borrow<Shape> for ShiftedShape {
     fn borrow(&self) -> &Shape {
         &self.shape
-    }
-}
-
-#[inline]
-pub fn update_min_point(min_point: &mut Vec2, point: Vec2) {
-    if point.x < min_point.x {
-        min_point.x = point.x;
-    }
-    if point.y < min_point.y {
-        min_point.y = point.y;
-    }
-}
-
-#[inline]
-pub fn update_max_point(max_point: &mut Vec2, point: Vec2) {
-    if point.x > max_point.x {
-        max_point.x = point.x;
-    }
-    if point.y > max_point.y {
-        max_point.y = point.y;
     }
 }

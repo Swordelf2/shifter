@@ -13,7 +13,7 @@ use bevy::reflect::TypeUuid;
 use bevy::utils::BoxedFuture;
 
 use crate::config::conversion::SVG_TO_UNITS;
-use crate::util::shape::{CircleShape, PolyShape, Shape};
+use crate::game::physics::shape::{CircleShape, PolyShape, Shape};
 
 /// Asset type, which holds additional svg data for an object
 #[derive(Default, Debug, TypeUuid)]
