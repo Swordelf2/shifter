@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 /// Controls
 pub mod keybinds {
     use bevy::input::keyboard::KeyCode;
@@ -14,8 +16,8 @@ pub mod keybinds {
     }
 }
 
-/// Player rotation speed
-pub const ROTATION_SPEED: f32 = 0.0;
+/// Player rotation speed (in radians/s)
+pub const ROTATION_SPEED: f32 = 0.25 * (PI * 2.0);
 
 pub const EPS: f32 = 1e-6;
 
@@ -24,9 +26,11 @@ pub mod physics {
     /// All speeds are in (world points)/second
     pub const GLOBAL_MAX_VEL: f32 = 500.0;
     /// Player acceleration
-    pub const PLAYER_ACCEL: f32 = 160.0;
+    pub const PLAYER_ACCEL: f32 = 1000.0;
     /// Player maximum speed
     pub const PLAYER_MAX_VEL: f32 = 320.0;
+    /// Player friction coefficient
+    pub const PLAYER_FRICTION_COEFF: f32 = 5.0;
 }
 
 /// Z depths of entities

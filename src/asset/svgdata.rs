@@ -162,6 +162,15 @@ impl AssetLoader for SvgDataLoader {
                             ));
                         }
                     },
+                    Event::Tag(tag::Rectangle, _, _) => match state {
+                        State::OutsideData => {}
+                        State::InsideData => {
+                            panic!("Rectangle in data without a group")
+                        }
+                        State::InsideGroup => {
+                            panic!("Rectangle in a data group")
+                        }
+                    },
                     _ => {}
                 }
             }

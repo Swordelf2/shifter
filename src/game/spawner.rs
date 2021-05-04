@@ -62,9 +62,12 @@ pub fn spawn(
                         ..Default::default()
                     })
                     .insert(player::Player)
-                    .insert(physics::DynamicObject::from_max_vel(
-                        config::physics::PLAYER_MAX_VEL,
-                    ))
+                    .insert(
+                        physics::DynamicObject::from_max_vel_and_friction_coeff(
+                            config::physics::PLAYER_MAX_VEL,
+                            config::physics::PLAYER_FRICTION_COEFF,
+                        ),
+                    )
                     .insert(physics::Collider::solid_from_shapes(
                         svg_data.groups[svgdata::COLLISION].clone(),
                     ))

@@ -98,6 +98,8 @@ pub fn run() {
     ////* Debug module *////
     #[cfg(feature = "debug")]
     {
+        // Show fps in console
+        app.add_plugin(bevy::diagnostic::LogDiagnosticsPlugin::default());
         app.add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin);
 
         app.add_plugin(bevy_inspector_egui::WorldInspectorPlugin::new())

@@ -38,8 +38,11 @@ pub fn update(
 
         let dynamic_object = &mut *dynamic_object;
 
+        // Apply friction
+        let total_accel = dynamic_object.accel
+            - dynamic_object.vel * dynamic_object.friction_coeff;
         // Apply the aceleration
-        dynamic_object.vel += dynamic_object.accel * delta;
+        dynamic_object.vel += total_accel * delta;
         // Clamp the velocity to `max_vel`
         if dynamic_object.vel.length_squared() > dynamic_object.max_vel_squared
         {
