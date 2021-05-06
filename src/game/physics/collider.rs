@@ -1,3 +1,7 @@
+use std::borrow::Borrow;
+
+use itertools::Itertools;
+
 use bevy::ecs::entity::Entity;
 use bevy::math::Vec2;
 use bevy::transform::components::Transform;
@@ -95,7 +99,24 @@ impl Collider {
 
     /// Returns whether two colliders are colliding.
     pub(super) fn process_collision(&self, other: &Collider) -> bool {
-        // TODO impl real stuff
-        self.bounding_box.collides(&other.bounding_box)
+        if !self.bounding_box.collides(&other.bounding_box) {
+            return false;
+        }
+
+        // Retreive the transformed shapes from the shifted shapes
+        let shapes1 = self.shapes.iter().map(Borrow::<Shape>::borrow);
+        let shapes2 = other.shapes.iter().map(Borrow::<Shape>::borrow);
+        // Iterate over all pairs of shapes
+        for (shape1, shape2) in Itertools::cartesian_product(shapes1, shapes2) {
+            // Iterate over all edges
+            /*
+            match (shape1, shape2) {
+                (Shape::Circle(circle1), Shape::Circle(circle2)) => {
+                }
+                (Shape::Poly(poly1), Shape::Circle(circle2) => {
+                }
+            */
+        }
+        true
     }
 }

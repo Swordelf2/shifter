@@ -202,49 +202,47 @@ fn to_centered(mut point: Vec2, size: Vec2) -> Vec2 {
 }
 
 fn path_to_shape(data: Data, size: Vec2) -> Shape {
-    let mut poly_shape = PolyShape::default();
-    let mut last_point: Option<Vec2> = None;
+    let mut points = Vec::with_capacity(data.len());
+    let mut point: Option<Vec2> = None;
     for command in data.iter() {
         match command {
             Command::Move(Position::Absolute, parameters) => {
-                last_point = Some(Vec2::new(parameters[0], parameters[1]));
+                point = Some(Vec2::new(parameters[0], parameters[1]));
             }
             Command::Line(Position::Absolute, parameters) => {
-                last_point = Some(Vec2::new(parameters[0], parameters[1]));
+                point = Some(Vec2::new(parameters[0], parameters[1]));
             }
             Command::Line(Position::Relative, parameters) => {
-                last_point = Some(Vec2::new(
-                    last_point.unwrap().x + parameters[0],
-                    last_point.unwrap().y + parameters[1],
+                point = Some(Vec2::new(
+                    point.unwrap().x + parameters[0],
+                    point.unwrap().y + parameters[1],
                 ));
             }
             Command::HorizontalLine(Position::Absolute, parameters) => {
-                last_point =
-                    Some(Vec2::new(parameters[0], last_point.unwrap().y));
+                point = Some(Vec2::new(parameters[0], point.unwrap().y));
             }
             Command::HorizontalLine(Position::Relative, parameters) => {
-                last_point = Some(Vec2::new(
-                    last_point.unwrap().x + parameters[0],
-                    last_point.unwrap().y,
+                point = Some(Vec2::new(
+                    point.unwrap().x + parameters[0],
+                    point.unwrap().y,
                 ));
             }
             Command::VerticalLine(Position::Absolute, parameters) => {
-                last_point =
-                    Some(Vec2::new(last_point.unwrap().x, parameters[0]));
+                point = Some(Vec2::new(point.unwrap().x, parameters[0]));
             }
             Command::VerticalLine(Position::Relative, parameters) => {
-                last_point = Some(Vec2::new(
-                    last_point.unwrap().x,
-                    last_point.unwrap().y + parameters[0],
+                point = Some(Vec2::new(
+                    point.unwrap().x,
+                    point.unwrap().y + parameters[0],
                 ));
             }
-            Command::Close => last_point = None,
+            Command::Close => point = None,
             _ => panic!("Unsupported path command"),
         }
-        if let Some(last_point) = last_point {
-            poly_shape.points.push(to_centered(last_point, size));
+        if let Some(point) = point {
+            points.push(to_centered(point, size));
         }
     }
 
-    Shape::Poly(poly_shape)
+    Shape::Poly(PolyShape::new_with_check(points))
 }

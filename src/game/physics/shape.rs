@@ -29,11 +29,48 @@ pub struct CircleShape {
     pub center: Vec2,
 }
 
-// TODO check if it's a convex polygon
 #[derive(Debug, Clone, Default)]
 #[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
+/// Points and their edges are ordered counter-clockwise.
 pub struct PolyShape {
-    pub points: Vec<Vec2>,
+    points: Vec<Vec2>,
+    edges: Vec<Vec2>,
+}
+
+impl PolyShape {
+    /// Create a poly shape while checking if it's a convex polygon.
+    /// The algorithm accepts self-crossing non-convex polygons for now.
+    /// TODO fix that
+    pub fn new_with_check(points: Vec<Vec2>) -> Self {
+        assert!(!points.is_empty());
+        let mut poly = PolyShape {
+            edges: vec![Vec2::default(); points.len()],
+            points,
+        };
+
+        poly.update_edges();
+
+        // TODO
+        // check if convex
+        poly
+    }
+
+    fn update_edges(&mut self) {
+        let start_iter = self.points.iter();
+        let mut end_iter = self.points.iter();
+        end_iter.next();
+        // Add the first point to the end of the `end_iter`
+        let end_iter = end_iter.chain(self.points.iter().take(1));
+        for ((start, end), edge) in
+            start_iter.zip(end_iter).zip(self.edges.iter_mut())
+        {
+            *edge = *end - *start;
+        }
+
+        for (point, edge) in self.points.iter().zip(self.edges.iter()) {
+            println!("Point = {:?}\nEdge = {:?}", point, edge);
+        }
+    }
 }
 
 /// Shape that can shift. Current shape is always `transform` * `original_shape`,
@@ -98,6 +135,9 @@ impl ShiftedShape {
                     update_min_point(&mut min_point, *point);
                     update_max_point(&mut max_point, *point);
                 }
+
+                // Update the edges of the poly shape
+                poly_shape.update_edges();
             }
 
             _ => unreachable!(),
