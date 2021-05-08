@@ -20,9 +20,9 @@ pub fn spawn(map_button: Res<menu::MapButton>, mut spawns: EventWriter<Spawn>) {
         position: Vec2::ZERO,
         prefab: Prefab::Player,
     });
-    // Spawn the princess at (400, 400)
+    // Spawn the princess
     spawns.send(Spawn {
-        position: Vec2::new(400.0, 400.0),
+        position: Vec2::new(150.0, 150.0),
         prefab: Prefab::Princess,
     });
 }

@@ -24,11 +24,13 @@ pub mod physics {
     /// All speeds are in (world points)/second
     pub const GLOBAL_MAX_VEL: f32 = 500.0;
     /// Player acceleration
-    pub const PLAYER_ACCEL: f32 = 1000.0;
+    pub const PLAYER_ACCEL: f32 = 700.0; // 1000.0
     /// Player maximum speed
-    pub const PLAYER_MAX_VEL: f32 = 320.0;
+    pub const PLAYER_MAX_VEL: f32 = 320.0; // 320.0
     /// Player friction coefficient
-    pub const PLAYER_FRICTION_COEFF: f32 = 5.0;
+    pub const PLAYER_FRICTION_COEFF: f32 = 1.0; // 5.0
+
+    pub const BOUNCINESS: f32 = 0.5;
 }
 
 /// Z depths of entities

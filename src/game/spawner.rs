@@ -93,7 +93,7 @@ pub fn spawn(
                         sprite: Sprite::new(svg_data.size),
                         ..Default::default()
                     })
-                    .insert(physics::Collider::nonsolid_from_shapes(
+                    .insert(physics::Collider::solid_from_shapes(
                         svg_data.groups[svgdata::COLLISION].clone(),
                     ))
                     .id()

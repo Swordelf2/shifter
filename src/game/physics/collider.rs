@@ -24,7 +24,7 @@ pub struct Collider {
     /// Shapes that comprise the collider.
     shapes: SmallVec<[ShiftedShape; 2]>,
     /// Solid colliders are bounced off of, nonsolid can be passed through.
-    solid: bool,
+    pub solid: bool,
     /// Collision instances that happened within the last frame.
     /// This is cleared and set in `physics::update()` system each frame.
     recent_collisions: Vec<Collision>,

@@ -10,6 +10,9 @@ pub trait Vec2Ext {
 
     /// Returns a vector, rotated clockwise by `PI/2`
     fn rotate_clockwise_90(self) -> Self;
+
+    /// Reflects the vector along a given (not necessarily normalized) normal
+    fn reflect(self, normal: Self) -> Self;
 }
 
 impl Vec2Ext for Vec2 {
@@ -24,6 +27,11 @@ impl Vec2Ext for Vec2 {
 
     fn rotate_clockwise_90(self) -> Vec2 {
         Vec2::new(self.y, -self.x)
+    }
+
+    fn reflect(self, normal: Vec2) -> Vec2 {
+        let falling = self;
+        falling - 2.0 * falling.dot(normal) / normal.length_squared() * normal
     }
 }
 
@@ -54,6 +62,21 @@ mod tests {
         assert!(Vec2::abs_diff_eq(
             Vec2::new(-2.0, 1.0).rotate_clockwise_90(),
             Vec2::new(1.0, 2.0),
+            EPS
+        ));
+    }
+
+    #[test]
+    fn reflect_test() {
+        const EPS: f32 = 1e-7;
+        assert!(Vec2::abs_diff_eq(
+            Vec2::new(3.0, 3.0).reflect(Vec2::new(0.0, -1.0)),
+            Vec2::new(3.0, -3.0),
+            EPS
+        ));
+        assert!(Vec2::abs_diff_eq(
+            Vec2::new(-100.0, 0.0).reflect(Vec2::new(0.002, 0.002)),
+            Vec2::new(0.0, 100.0),
             EPS
         ));
     }
