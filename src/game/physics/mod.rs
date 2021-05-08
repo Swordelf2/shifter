@@ -73,9 +73,9 @@ pub fn update(
         for (entity2, _transform2, mut collider2) in
             stat_object_query.iter_mut()
         {
-            if collider1.process_collision(&collider2) {
-                collider1.add_recent_collision(entity2);
-                collider2.add_recent_collision(entity1);
+            if let Some(mpv) = collider1.process_collision(&collider2) {
+                collider1.add_recent_collision(entity2, mpv);
+                collider2.add_recent_collision(entity1, -mpv);
             }
         }
     }

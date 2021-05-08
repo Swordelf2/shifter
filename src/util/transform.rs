@@ -56,29 +56,32 @@ mod tests {
 
     use bevy::math::Quat;
 
-    use crate::config::EPS;
-
     use super::*;
 
     #[test]
     fn dirs() {
+        const EPS: f32 = 1e-6;
         // transform is looking to the left
         let transform =
             Transform::from_rotation(Quat::from_rotation_z(PI * 0.5));
 
         assert!(Vec2::abs_diff_eq(
-            &transform.forward(),
+            transform.forward(),
             Vec2::new(-1.0, 0.0),
             EPS
         ));
-        assert!(Vec2.abs_diff_eq(&transform.left(), Vec2::new(0.0, -1.0), EPS));
         assert!(Vec2::abs_diff_eq(
-            &transform.backward(),
+            transform.left(),
+            Vec2::new(0.0, -1.0),
+            EPS
+        ));
+        assert!(Vec2::abs_diff_eq(
+            transform.backward(),
             Vec2::new(1.0, 0.0),
             EPS
         ));
         assert!(Vec2::abs_diff_eq(
-            &transform.right(),
+            transform.right(),
             Vec2::new(0.0, 1.0),
             EPS
         ));

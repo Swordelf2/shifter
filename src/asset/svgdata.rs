@@ -138,14 +138,13 @@ impl AssetLoader for SvgDataLoader {
                                 "Transform attribute present in svg"
                             );
                             cur_group.as_mut().unwrap().push(Shape::Circle(
-                                CircleShape {
-                                    radius: attr
-                                        .get("r")
+                                CircleShape::new(
+                                    attr.get("r")
                                         .unwrap()
                                         .parse::<f32>()
                                         .unwrap()
                                         * SVG_TO_UNITS,
-                                    center: to_centered(
+                                    to_centered(
                                         Vec2::new(
                                             attr.get("cx")
                                                 .unwrap()
@@ -158,7 +157,7 @@ impl AssetLoader for SvgDataLoader {
                                         ),
                                         size.unwrap(),
                                     ),
-                                },
+                                ),
                             ));
                         }
                     },
@@ -244,5 +243,5 @@ fn path_to_shape(data: Data, size: Vec2) -> Shape {
         }
     }
 
-    Shape::Poly(PolyShape::new_with_check(points))
+    Shape::Poly(PolyShape::new(points))
 }

@@ -23,12 +23,10 @@ impl BoundingBox {
 
     /// Returns whether two bounding boxes collide.
     pub fn collides(&self, other: &BoundingBox) -> bool {
-        segments_intersect(self.min.x, self.max.x, other.min.x, other.max.x)
+        segments_intersect((self.min.x, self.max.x), (other.min.x, other.max.x))
             && segments_intersect(
-                self.min.y,
-                self.max.y,
-                other.min.y,
-                other.max.y,
+                (self.min.y, self.max.y),
+                (other.min.y, other.max.y),
             )
     }
 }

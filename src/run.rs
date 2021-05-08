@@ -98,9 +98,11 @@ pub fn run() {
     ////* Debug module *////
     #[cfg(feature = "debug")]
     {
+        /*
         // Show fps in console
         app.add_plugin(bevy::diagnostic::LogDiagnosticsPlugin::default());
         app.add_plugin(bevy::diagnostic::FrameTimeDiagnosticsPlugin);
+        */
 
         app.add_plugin(bevy_inspector_egui::WorldInspectorPlugin::new())
             .add_system(debug::test_system.system());
@@ -110,7 +112,7 @@ pub fn run() {
             bevy_inspector_egui::InspectableRegistry::default,
         );
         registry.register::<game::physics::DynamicObject>();
-        registry.register::<game::physics::Collider>();
+        //registry.register::<game::physics::Collider>();
     }
 
     app.run();

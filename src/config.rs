@@ -17,9 +17,7 @@ pub mod keybinds {
 }
 
 /// Player rotation speed (in radians/s)
-pub const ROTATION_SPEED: f32 = 0.25 * (PI * 2.0);
-
-pub const EPS: f32 = 1e-6;
+pub const ROTATION_SPEED: f32 = 0.0 * (PI * 2.0); // 0.25
 
 pub mod physics {
     /// No physical object in the game can exceed this speed

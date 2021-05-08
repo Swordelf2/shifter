@@ -1,6 +1,5 @@
-use std::borrow::Borrow;
-
 use itertools::Itertools;
+use smallvec::SmallVec;
 
 use bevy::ecs::entity::Entity;
 use bevy::math::Vec2;
@@ -14,24 +13,16 @@ use super::BoundingBox;
 #[derive(Debug)]
 #[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
 pub struct Collision {
-    pub entity: Entity,
-}
-
-// TODO probalby should remove this Default, it's only here for the inspector
-impl Default for Collision {
-    fn default() -> Self {
-        Self {
-            entity: Entity::new(0),
-        }
-    }
+    pub other_entity: Entity,
+    pub mpv: Vec2,
 }
 
 /// Component, indicating that this entity can collide with other colliders.
 #[derive(Debug, Default)]
-#[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
+// TODO maybe make this inspectable somehow
 pub struct Collider {
     /// Shapes that comprise the collider.
-    shapes: Vec<ShiftedShape>,
+    shapes: SmallVec<[ShiftedShape; 2]>,
     /// Solid colliders are bounced off of, nonsolid can be passed through.
     solid: bool,
     /// Collision instances that happened within the last frame.
@@ -70,10 +61,12 @@ impl Collider {
     }
 
     #[inline]
-    pub(super) fn add_recent_collision(&mut self, other_entity: Entity) {
-        self.recent_collisions.push(Collision {
-            entity: other_entity,
-        });
+    pub(super) fn add_recent_collision(
+        &mut self,
+        other_entity: Entity,
+        mpv: Vec2,
+    ) {
+        self.recent_collisions.push(Collision { other_entity, mpv });
     }
 
     /// Update the collider's global shapes and bounding box.
@@ -97,26 +90,42 @@ impl Collider {
         self.recent_collisions.clear();
     }
 
-    /// Returns whether two colliders are colliding.
-    pub(super) fn process_collision(&self, other: &Collider) -> bool {
+    #[inline]
+    fn update_mpv(cur_mpv: &mut Option<Vec2>, mpv: Vec2) {
+        if let Some(cur_mpv) = cur_mpv {
+            if mpv.length_squared() < cur_mpv.length_squared() {
+                *cur_mpv = mpv;
+            }
+        } else {
+            *cur_mpv = Some(mpv)
+        }
+    }
+
+    /// Returns `Some(mpv)` if two colliders are colliding and `None` otherwise, where
+    /// `mpv` is the Minimum Push Vector to push `other` out of `self`.
+    ///
+    /// TODO: maybe optimize the Circle to Circle case
+    pub(super) fn process_collision(&self, other: &Collider) -> Option<Vec2> {
+        // Bounding box optimization
         if !self.bounding_box.collides(&other.bounding_box) {
-            return false;
+            return None;
         }
 
-        // Retreive the transformed shapes from the shifted shapes
-        let shapes1 = self.shapes.iter().map(Borrow::<Shape>::borrow);
-        let shapes2 = other.shapes.iter().map(Borrow::<Shape>::borrow);
+        // Minimum push vector
+        let mut cur_mpv = None;
         // Iterate over all pairs of shapes
-        for (shape1, shape2) in Itertools::cartesian_product(shapes1, shapes2) {
-            // Iterate over all edges
-            /*
-            match (shape1, shape2) {
-                (Shape::Circle(circle1), Shape::Circle(circle2)) => {
-                }
-                (Shape::Poly(poly1), Shape::Circle(circle2) => {
-                }
-            */
+        let mut normal_buf = Vec::new();
+        for (shape1, shape2) in Itertools::cartesian_product(
+            self.shapes.iter(),
+            other.shapes.iter(),
+        ) {
+            // If the shapes collide, update the mpv
+            if let Some(mpv) = shape1.process_collision(shape2, &mut normal_buf)
+            {
+                Self::update_mpv(&mut cur_mpv, mpv);
+            }
         }
-        true
+
+        cur_mpv
     }
 }
