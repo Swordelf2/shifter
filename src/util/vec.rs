@@ -30,6 +30,12 @@ impl Vec2Ext for Vec2 {
     }
 
     fn reflect(self, normal: Vec2) -> Vec2 {
+        const EPS: f32 = 1e-7;
+        assert!(
+            !normal.abs_diff_eq(Vec2::ZERO, EPS),
+            "Reflecting off of an almost 0 normal = {:?}",
+            normal,
+        );
         let falling = self;
         falling - 2.0 * falling.dot(normal) / normal.length_squared() * normal
     }

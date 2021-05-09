@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="200"
+   viewBox="0 0 26.458333 52.916668"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
+   sodipodi:docname="player_test.svg"
+   inkscape:export-filename="/home/swordelf/work/shifter/assets/textures/player_test.png"
+   inkscape:export-xdpi="240"
+   inkscape:export-ydpi="240">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="50.222712"
+     inkscape:cy="91.820424"
+     inkscape:document-units="px"
+     inkscape:current-layer="g851"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-width="2480"
+     inkscape:window-height="1325"
+     inkscape:window-x="37"
+     inkscape:window-y="72"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     id="layer1"
+     inkscape:groupmode="layer">
+    <rect
+       style="fill:#ff4f00;fill-opacity:1;stroke:#0016ff;stroke-width:0.529167"
+       id="rect833"
+       width="26.223669"
+       height="23.054626"
+       x="0.13363476"
+       y="29.494787" />
+    <circle
+       style="fill:#ff4f00;fill-opacity:1;stroke:#0016ff;stroke-width:0.366387"
+       id="path835"
+       cx="17.443634"
+       cy="20.404364"
+       r="8.8365097" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="data"
+     style="display:none">
+    <g
+       id="g851"
+       inkscape:label="collision">
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#05ff00;stroke-width:0.366387;stroke-opacity:1"
+         id="circle846"
+         cx="17.443634"
+         cy="20.404364"
+         r="8.8365097" />
+      <path
+         id="rect843"
+         style="fill:none;fill-opacity:1;stroke:#11ff00;stroke-width:0.529167;stroke-opacity:1"
+         d="M 0.13363476,29.494787 H 26.357304 V 52.549414 H 0.13363476 Z" />
+    </g>
+  </g>
+</svg>

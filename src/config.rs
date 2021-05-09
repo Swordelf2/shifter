@@ -30,7 +30,7 @@ pub mod physics {
     /// Player friction coefficient
     pub const PLAYER_FRICTION_COEFF: f32 = 1.0; // 5.0
 
-    pub const BOUNCINESS: f32 = 0.5;
+    pub const BOUNCINESS: f32 = 1.0;
 }
 
 /// Z depths of entities
@@ -44,7 +44,7 @@ pub mod depths {
 pub mod sizes {
     use bevy::math::{const_vec2, Vec2};
 
-    pub const PLAYER: Vec2 = const_vec2!([64.0, 64.0]);
+    pub const PLAYER: Vec2 = const_vec2!([64.0, 128.0]);
     pub const PRINCESS: Vec2 = const_vec2!([200.0, 200.0]);
     pub const WORLD_MAP1: Vec2 = const_vec2!([1600.0, 1600.0]);
 }

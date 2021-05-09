@@ -63,8 +63,19 @@ impl PolyShape {
         poly.update_edges();
 
         // Check if it's a convex polygon
-        const ANGLE_EPS: f32 = 1e-6;
-        let angle_sum: f32 = iter::pairs(poly.edges.iter())
+        if !poly.is_convex() {
+            // Try to reverse the points
+            poly.points.reverse();
+            poly.update_edges();
+            assert!(poly.is_convex(), "Not a convex polygon");
+        }
+
+        poly
+    }
+
+    /// Must update edges before calling
+    fn is_convex(&self) -> bool {
+        let angle_sum: f32 = iter::pairs(self.edges.iter())
             .map(|(edge1, edge2)| {
                 let mut angle = Vec2::angle_between(*edge1, *edge2);
                 if angle < 0.0 {
@@ -73,14 +84,8 @@ impl PolyShape {
                 angle
             })
             .sum();
-        let diff = angle_sum - 2.0 * PI;
-        assert!(
-            diff.abs() < ANGLE_EPS,
-            "Not a convex polygon, or points are not\\
-            in counter clockwise order"
-        );
-
-        poly
+        const ANGLE_EPS: f32 = 1e-6;
+        (angle_sum - 2.0 * PI).abs() < ANGLE_EPS
     }
 
     fn update_edges(&mut self) {
@@ -205,7 +210,11 @@ impl ShiftedShape {
 
     /// Return projection of the shape onto the normalized `normal` as a segment.
     fn project(&self, normal: Vec2) -> (f32, f32) {
-        assert!(normal.is_normalized());
+        assert!(
+            normal.is_normalized(),
+            "Not normalized normal = {:?}",
+            normal
+        );
         match &self.shape {
             Shape::Circle(circle) => {
                 let center_projected = circle.center.dot(normal);

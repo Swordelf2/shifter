@@ -19,14 +19,16 @@ pub struct Collision {
 
 /// Component, indicating that this entity can collide with other colliders.
 #[derive(Debug, Default)]
-// TODO maybe make this inspectable somehow
+#[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
 pub struct Collider {
     /// Shapes that comprise the collider.
+    #[inspectable(ignore)]
     shapes: SmallVec<[ShiftedShape; 2]>,
     /// Solid colliders are bounced off of, nonsolid can be passed through.
     pub solid: bool,
     /// Collision instances that happened within the last frame.
     /// This is cleared and set in `physics::update()` system each frame.
+    #[inspectable(ignore)]
     recent_collisions: Vec<Collision>,
     /// AABB, used for collision optimization
     bounding_box: BoundingBox,
@@ -93,7 +95,7 @@ impl Collider {
     #[inline]
     fn update_mpv(cur_mpv: &mut Option<Vec2>, mpv: Vec2) {
         if let Some(cur_mpv) = cur_mpv {
-            if mpv.length_squared() < cur_mpv.length_squared() {
+            if mpv.length_squared() > cur_mpv.length_squared() {
                 *cur_mpv = mpv;
             }
         } else {
@@ -107,12 +109,14 @@ impl Collider {
     /// TODO: maybe optimize the Circle to Circle case
     pub(super) fn process_collision(&self, other: &Collider) -> Option<Vec2> {
         // Bounding box optimization
+        /* TODO uncomment this
         if !self.bounding_box.collides(&other.bounding_box) {
             return None;
         }
+        */
 
-        // Minimum push vector
-        let mut cur_mpv = None;
+        // Minimum push vector, which is maximum over all mpvs between all shapes
+        let mut cur_mpv: Option<Vec2> = None;
         // Iterate over all pairs of shapes
         let mut normal_buf = Vec::new();
         for (shape1, shape2) in Itertools::cartesian_product(
@@ -126,6 +130,8 @@ impl Collider {
             }
         }
 
-        cur_mpv
+        // If the mpv is very small, it's as if there was no collision
+        const EPS: f32 = 1e-7;
+        cur_mpv.filter(|cur_mpv| !cur_mpv.abs_diff_eq(Vec2::ZERO, EPS))
     }
 }
