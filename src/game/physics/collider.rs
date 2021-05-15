@@ -10,16 +10,14 @@ use super::util::{update_max_point, update_min_point};
 use super::BoundingBox;
 
 /// Collision instance
-#[derive(Debug)]
-#[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
+#[derive(Copy, Clone, Debug, bevy_inspector_egui::Inspectable)]
 pub struct Collision {
     pub other_entity: Entity,
     pub mpv: Vec2,
 }
 
 /// Component, indicating that this entity can collide with other colliders.
-#[derive(Debug, Default)]
-#[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
+#[derive(Clone, Debug, Default, bevy_inspector_egui::Inspectable)]
 pub struct Collider {
     /// Shapes that comprise the collider.
     #[inspectable(ignore)]
@@ -109,11 +107,9 @@ impl Collider {
     /// TODO: maybe optimize the Circle to Circle case
     pub(super) fn process_collision(&self, other: &Collider) -> Option<Vec2> {
         // Bounding box optimization
-        /* TODO uncomment this
         if !self.bounding_box.collides(&other.bounding_box) {
             return None;
         }
-        */
 
         // Minimum push vector, which is maximum over all mpvs between all shapes
         let mut cur_mpv: Option<Vec2> = None;

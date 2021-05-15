@@ -9,6 +9,7 @@ use crate::util::QuatExt;
 use super::physics::DynamicObject;
 
 /// Marker component for the player entity
+#[derive(Copy, Clone, Debug, Default)]
 pub struct Player;
 
 /// Change player's accel in response to player input

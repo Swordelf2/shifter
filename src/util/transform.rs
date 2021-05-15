@@ -1,4 +1,7 @@
-use bevy::{math::Vec2, transform::components::Transform};
+use bevy::{
+    math::{Vec2, Vec3},
+    transform::components::Transform,
+};
 
 use super::QuatExt;
 
@@ -16,6 +19,12 @@ pub trait TransformExt {
 
     /// Returns transform, with scale multiplied by `scale`
     fn scaled(self, scale_factor: Vec2) -> Self;
+
+    /// Adds `translation` to `self`
+    fn translate(&mut self, translation: Vec2);
+
+    /// Sets x and y components of the translation to `translation`
+    fn translate_to(&mut self, translation: Vec2);
 }
 
 impl TransformExt for Transform {
@@ -47,6 +56,16 @@ impl TransformExt for Transform {
         self.scale.x *= scale_factor.x;
         self.scale.y *= scale_factor.y;
         self
+    }
+
+    #[inline]
+    fn translate(&mut self, translation: Vec2) {
+        self.translation += Vec3::from((translation, 0.0));
+    }
+
+    #[inline]
+    fn translate_to(&mut self, translation: Vec2) {
+        self.translation = Vec3::from((translation, self.translation.z));
     }
 }
 

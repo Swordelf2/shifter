@@ -24,14 +24,6 @@ pub fn spawn(mut commands: Commands) {
 type PlayerQuery<'a, 'b> = Query<'a, &'b Transform, With<Player>>;
 type CameraQuery<'a, 'b> = Query<'a, &'b mut Transform, With<GameCamera>>;
 pub fn movement(mut q: QuerySet<(PlayerQuery, CameraQuery)>) {
-    /*
-    pub fn movement(
-        mut q: QuerySet<(
-            Query<&Transform, With<Player>>,
-            Query<&mut Transform, With<GameCamera>>,
-        )>,
-    ) {
-    */
     let player_query = q.q0();
 
     // TODO: add logging here

@@ -1,28 +1,25 @@
 use bevy::prelude::*;
 
 use crate::menu;
+use crate::util::TransformExt;
 
-use super::spawner::{Prefab, Spawn, WorldMapPrefab};
-
+use super::prefab::Prefabs;
 /* Systems*/
 
 /// System, that initializes the whole world by sending [Spawn] events
-pub fn spawn(map_button: Res<menu::MapButton>, mut spawns: EventWriter<Spawn>) {
-    // Spawn the map at (0, 0)
-    spawns.send(Spawn {
-        position: Vec2::ZERO,
-        prefab: Prefab::WorldMap(WorldMapPrefab {
-            map_id: map_button.map_id,
-        }),
-    });
-    // Spawn the player at (0, 0)
-    spawns.send(Spawn {
-        position: Vec2::ZERO,
-        prefab: Prefab::Player,
-    });
-    // Spawn the princess
-    spawns.send(Spawn {
-        position: Vec2::new(150.0, 150.0),
-        prefab: Prefab::Princess,
-    });
+pub fn spawn(
+    mut commands: Commands,
+    map_button: Res<menu::MapButton>,
+    prefabs: Res<Prefabs>,
+) {
+    commands.spawn_bundle(prefabs.world_map1.clone());
+
+    commands.spawn_bundle(prefabs.player.clone());
+
+    let mut princess = prefabs.princess.clone();
+    princess
+        .sprite_bundle
+        .transform
+        .translate_to(Vec2::new(200.0, 200.0));
+    commands.spawn_bundle(princess);
 }

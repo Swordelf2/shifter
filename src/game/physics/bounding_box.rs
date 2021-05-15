@@ -3,8 +3,7 @@ use bevy::math::Vec2;
 use super::util::segments_intersect;
 
 /// AABB: Axis-aligned bounding box.
-#[derive(Debug, Default)]
-#[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
+#[derive(Debug, Default, Clone, bevy_inspector_egui::Inspectable)]
 pub struct BoundingBox {
     /// Bottom left point of the box
     pub min: Vec2,

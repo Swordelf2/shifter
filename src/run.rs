@@ -28,8 +28,8 @@ pub fn run() {
     .init_asset_loader::<asset::svgdata::SvgDataLoader>()
     // State //
     .add_state(AppState::Loading)
-    // Events
-    .add_event::<game::spawner::Spawn>()
+    // Events (none for now)
+    // .add_event::<game::spawner::Spawn>()
     /*** SYSTEMS ***/
     // Startup systems
     .add_startup_system(camera::spawn.system())
@@ -56,7 +56,6 @@ pub fn run() {
     // Enter
     .add_system_set(
         SystemSet::on_enter(AppState::Game)
-            .with_system(game::overlord::spawn.system())
             .with_system(game::world::spawn.system()),
     )
     // Input
@@ -64,7 +63,7 @@ pub fn run() {
         SystemSet::on_update(AppState::Game)
             .label(game::SystemLabel::Input)
             .with_system(game::player::input.system())
-            .with_system(game::overlord::exit_press.system()),
+            .with_system(game::exit_press.system()),
     )
     // Physics
     .add_system_set(
@@ -84,15 +83,9 @@ pub fn run() {
         SystemSet::on_update(AppState::Game)
             .with_system(game::player::rotation.system()),
     )
-    // Spawner
-    .add_system_set(
-        SystemSet::on_update(AppState::Game)
-            .with_system(game::spawner::spawn.system()),
-    )
     // Exit
     .add_system_set(
-        SystemSet::on_exit(AppState::Game)
-            .with_system(game::overlord::exit.system()),
+        SystemSet::on_exit(AppState::Game).with_system(game::exit.system()),
     );
 
     ////* Debug module *////

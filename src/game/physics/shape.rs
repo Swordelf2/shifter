@@ -107,7 +107,7 @@ impl PolyShape {
 /// where `transform` is the last transform given in `update()`.
 ///
 /// Only this struct is used by the collision system in [Collider], not [Shape].
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 #[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
 pub(super) struct ShiftedShape {
     original_shape: Shape,

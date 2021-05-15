@@ -17,7 +17,7 @@ mod dynamic_object;
 use bevy::prelude::*;
 
 use crate::config::physics;
-use crate::util::Vec2Ext;
+use crate::util::{TransformExt, Vec2Ext};
 
 /// Main physics system, moves all dynamic objects and processes collisions
 pub fn update(
@@ -55,7 +55,7 @@ pub fn update(
             );
         }
         // Apply the velocity
-        transform.translation += Vec3::from((dynamic_object.vel, 0.0)) * delta;
+        transform.translate(dynamic_object.vel * delta);
     }
 
     /**** Collision ****/

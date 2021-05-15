@@ -6,12 +6,12 @@ edition = "2018"
 
 [features]
 # enable debug systems, defined in `debug` module
-debug = ["bevy-inspector-egui"]
+debug = []
 
 [dependencies]
 anyhow = "1.0"
 bevy = "0.5"
-bevy-inspector-egui = {version = "0.4.1", optional = true}
+bevy-inspector-egui = {version = "0.4.1"}
 strum = { version = "0.20", features = ["derive"] }
 svg = "0.9.1"
 itertools = "0.10.0"

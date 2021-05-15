@@ -3,7 +3,7 @@ use bevy::math::Vec2;
 use crate::config::physics;
 
 /// Component, indicating that this entity can move and collide with colliders
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "debug", derive(bevy_inspector_egui::Inspectable))]
 pub struct DynamicObject {
     /// External acceleration, is not modified by the physics system

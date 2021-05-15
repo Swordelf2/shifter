@@ -3,6 +3,7 @@
 use std::collections::HashMap;
 
 use crate::asset;
+use crate::game;
 use crate::state::AppState;
 
 use bevy::asset::LoadState;
@@ -75,6 +76,8 @@ pub fn check_loading_assets(
     texture_handles: Res<asset::TextureHandles>,
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut app_state: ResMut<State<AppState>>,
+    svg_datas: Res<Assets<asset::SvgData>>,
+    svg_data_handles: Res<asset::SvgDataHandles>,
 ) {
     if asset_server
         .get_group_load_state(handles_to_check.0.iter().map(|handle| handle.id))
@@ -85,7 +88,7 @@ pub fn check_loading_assets(
         // Iterate over all object labels and for each of them
         // create a material with their texture handle and put it into
         // `material_handles`
-        commands.insert_resource(asset::MaterialHandles {
+        let material_handles = asset::MaterialHandles {
             handles: texture_handles
                 .handles
                 .iter()
@@ -97,7 +100,15 @@ pub fn check_loading_assets(
                     )
                 })
                 .collect(),
-        });
+        };
+        // Initialize all prefabs
+        commands.insert_resource(game::prefab::initialize_prefabs(
+            &material_handles,
+            &svg_datas,
+            &svg_data_handles,
+        ));
+
+        commands.insert_resource(material_handles);
 
         // Transition to the next state
         app_state.set(AppState::Menu).unwrap();
