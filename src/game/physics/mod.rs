@@ -121,7 +121,13 @@ pub fn update(
         transform.translation += Vec3::from((mpv, 0.0));
 
         // Reflect the velocity off of mpv
-        dyn_object.vel = physics::BOUNCINESS * dyn_object.vel.reflect(mpv);
+        dyn_object.vel = dyn_object.vel.reflect(mpv);
+
+        // Reduce the component of the velocity, collinear with mpv,
+        // according to bounciness
+        let mpv_normalized = mpv.normalize();
+        let vel_proj = dyn_object.vel.dot(mpv_normalized) * mpv_normalized;
+        dyn_object.vel -= vel_proj * (1.0 - physics::BOUNCINESS);
     }
 
     // TODO process collisions between dynamic objects

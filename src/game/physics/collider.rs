@@ -126,6 +126,7 @@ impl Collider {
             }
         }
 
+        // TODO: think about whether we actually need this
         // If the mpv is very small, it's as if there was no collision
         const EPS: f32 = 1e-7;
         cur_mpv.filter(|cur_mpv| !cur_mpv.abs_diff_eq(Vec2::ZERO, EPS))
