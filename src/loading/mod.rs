@@ -25,17 +25,17 @@ pub fn start_loading_assets(
     let mut handles_to_check: Vec<HandleUntyped> = Vec::new();
     // Textures and svg data
     // Iterate over all object labels and load their texture and svg data
-    let mut texture_handles: HashMap<asset::ObjectLabel, Handle<Texture>> =
+    let mut sprite_image_handles: HashMap<asset::ObjectLabel, Handle<Image>> =
         HashMap::with_capacity(asset::ObjectLabel::COUNT);
     let mut svg_data_handles: HashMap<
         asset::ObjectLabel,
         Handle<asset::SvgData>,
     > = HashMap::with_capacity(asset::ObjectLabel::COUNT);
     for object_label in asset::ObjectLabel::iter() {
-        let texture_handle = asset_server
-            .load(asset::object_label_to_texture_path(object_label));
-        handles_to_check.push(texture_handle.clone_untyped());
-        texture_handles.insert(object_label, texture_handle);
+        let sprite_image_handle = asset_server
+            .load(asset::object_label_to_sprite_image_path(object_label));
+        handles_to_check.push(sprite_image_handle.clone_untyped());
+        sprite_image_handles.insert(object_label, sprite_image_handle);
 
         if let Some(svg_data_path) =
             asset::object_label_to_svg_path(object_label)
@@ -45,8 +45,8 @@ pub fn start_loading_assets(
             svg_data_handles.insert(object_label, svg_data_handle);
         }
     }
-    commands.insert_resource(asset::TextureHandles {
-        handles: texture_handles,
+    commands.insert_resource(asset::ImageHandles {
+        handles: sprite_image_handles,
     });
     commands.insert_resource(asset::SvgDataHandles {
         handles: svg_data_handles,
@@ -73,8 +73,7 @@ pub fn check_loading_assets(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     handles_to_check: Res<HandlesToCheck>,
-    texture_handles: Res<asset::TextureHandles>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    image_handles: Res<asset::ImageHandles>,
     mut app_state: ResMut<State<AppState>>,
     svg_datas: Res<Assets<asset::SvgData>>,
     svg_data_handles: Res<asset::SvgDataHandles>,
@@ -85,30 +84,12 @@ pub fn check_loading_assets(
     {
         commands.remove_resource::<HandlesToCheck>();
 
-        // Iterate over all object labels and for each of them
-        // create a material with their texture handle and put it into
-        // `material_handles`
-        let material_handles = asset::MaterialHandles {
-            handles: texture_handles
-                .handles
-                .iter()
-                .map(|(&object_label, texture_handle)| {
-                    (
-                        object_label,
-                        materials
-                            .add(ColorMaterial::from(texture_handle.clone())),
-                    )
-                })
-                .collect(),
-        };
         // Initialize all prefabs
         commands.insert_resource(game::prefab::initialize_prefabs(
-            &material_handles,
+            &image_handles,
             &svg_datas,
             &svg_data_handles,
         ));
-
-        commands.insert_resource(material_handles);
 
         // Transition to the next state
         app_state.set(AppState::Menu).unwrap();

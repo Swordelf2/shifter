@@ -85,22 +85,22 @@ mod tests {
             Transform::from_rotation(Quat::from_rotation_z(PI * 0.5));
 
         assert!(Vec2::abs_diff_eq(
-            transform.forward(),
+            TransformExt::forward(&transform),
             Vec2::new(-1.0, 0.0),
             EPS
         ));
         assert!(Vec2::abs_diff_eq(
-            transform.left(),
+            TransformExt::left(&transform),
             Vec2::new(0.0, -1.0),
             EPS
         ));
         assert!(Vec2::abs_diff_eq(
-            transform.backward(),
+            TransformExt::backward(&transform),
             Vec2::new(1.0, 0.0),
             EPS
         ));
         assert!(Vec2::abs_diff_eq(
-            transform.right(),
+            TransformExt::right(&transform),
             Vec2::new(0.0, 1.0),
             EPS
         ));

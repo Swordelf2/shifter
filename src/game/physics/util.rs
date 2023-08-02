@@ -53,6 +53,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[allow(clippy::bool_assert_comparison)]
     fn segments_intersect_test() {
         assert_eq!(segments_intersect((0.0, 0.0), (0.0, 0.0)), true);
         assert_eq!(segments_intersect((0.0, 1.0), (0.5, 1.5)), true);

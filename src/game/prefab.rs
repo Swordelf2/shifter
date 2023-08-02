@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 
-use crate::asset;
-use crate::asset::{
-    svgdata, MaterialHandles, ObjectLabel, SvgData, SvgDataHandles,
-};
+use crate::asset::{self, ImageHandles};
+use crate::asset::{svgdata, SvgData, SvgDataHandles};
 use crate::config;
 use crate::config::{depths, sizes};
 use crate::util::TransformExt;
@@ -49,7 +47,7 @@ pub struct WorldMap1 {
 
 // Initialize Prefabs
 pub fn initialize_prefabs(
-    material_handles: &MaterialHandles,
+    image_handles: &ImageHandles,
     svg_datas: &Assets<SvgData>,
     svg_data_handles: &SvgDataHandles,
 ) -> Prefabs {
@@ -65,10 +63,13 @@ pub fn initialize_prefabs(
             .unwrap();
         Player {
             sprite_bundle: SpriteBundle {
-                material: material_handles.handles[&object_label].clone(),
                 transform: Transform::from_xyz(0.0, 0.0, depth)
                     .scaled(size / svg_data.size),
-                sprite: Sprite::new(svg_data.size),
+                sprite: Sprite {
+                    custom_size: Some(svg_data.size),
+                    ..Default::default()
+                },
+                texture: image_handles.handles[&object_label].clone(),
                 ..Default::default()
             },
             name: Name::new(name),
@@ -94,10 +95,13 @@ pub fn initialize_prefabs(
             .unwrap();
         Princess {
             sprite_bundle: SpriteBundle {
-                material: material_handles.handles[&object_label].clone(),
                 transform: Transform::from_xyz(0.0, 0.0, depth)
                     .scaled(size / svg_data.size),
-                sprite: Sprite::new(svg_data.size),
+                sprite: Sprite {
+                    custom_size: Some(svg_data.size),
+                    ..Default::default()
+                },
+                texture: image_handles.handles[&object_label].clone(),
                 ..Default::default()
             },
             name: Name::new(name),
@@ -117,10 +121,13 @@ pub fn initialize_prefabs(
             .unwrap();
         WorldMap1 {
             sprite_bundle: SpriteBundle {
-                material: material_handles.handles[&object_label].clone(),
                 transform: Transform::from_xyz(0.0, 0.0, depth)
                     .scaled(size / svg_data.size),
-                sprite: Sprite::new(svg_data.size),
+                sprite: Sprite {
+                    custom_size: Some(svg_data.size),
+                    ..Default::default()
+                },
+                texture: image_handles.handles[&object_label].clone(),
                 ..Default::default()
             },
             name: Name::new(name),

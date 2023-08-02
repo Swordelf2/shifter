@@ -4,9 +4,11 @@ use bevy::prelude::*;
 use crate::game::player::Player;
 
 /// Marker component for the Main Menu Ui Camera
+#[derive(Component)]
 pub struct UiCamera;
 
 /// Marker component for the Game Camera
+#[derive(Component)]
 pub struct GameCamera;
 
 /* Systems*/
@@ -21,13 +23,13 @@ pub fn spawn(mut commands: Commands) {
         .insert(GameCamera);
 }
 
-type PlayerQuery<'a, 'b> = Query<'a, &'b Transform, With<Player>>;
-type CameraQuery<'a, 'b> = Query<'a, &'b mut Transform, With<GameCamera>>;
+type PlayerQuery<'a, 'b> = QueryState<&'b Transform, With<Player>>;
+type CameraQuery<'a, 'b> = QueryState<&'b mut Transform, With<GameCamera>>;
 pub fn movement(mut q: QuerySet<(PlayerQuery, CameraQuery)>) {
     let player_query = q.q0();
 
     // TODO: add logging here
-    let player_transform = match player_query.single() {
+    let player_transform = match player_query.get_single() {
         Ok(transform) => transform,
         Err(QuerySingleError::NoEntities(_)) => return,
         Err(QuerySingleError::MultipleEntities(e)) => {
@@ -39,8 +41,8 @@ pub fn movement(mut q: QuerySet<(PlayerQuery, CameraQuery)>) {
         player_transform.translation.y,
     );
 
-    let camera_query = q.q1_mut();
-    let mut camera_transform = match camera_query.single_mut() {
+    let mut camera_query = q.q1();
+    let mut camera_transform = match camera_query.get_single_mut() {
         Ok(transform) => transform,
         Err(QuerySingleError::NoEntities(_)) => return,
         Err(QuerySingleError::MultipleEntities(e)) => {

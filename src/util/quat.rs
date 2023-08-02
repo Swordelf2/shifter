@@ -19,7 +19,7 @@ impl QuatExt for Quat {
     }
 
     fn rotate(&mut self, delta: f32) {
-        assert!(0.0 <= delta && delta < 2.0 * PI);
+        assert!((0.0..2.0 * PI).contains(&delta));
         let angle = self.to_angle();
         let new_angle = angle + delta;
         let new_angle = if new_angle < 2.0 * PI {

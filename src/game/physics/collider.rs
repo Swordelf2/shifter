@@ -1,32 +1,33 @@
 use itertools::Itertools;
 use smallvec::SmallVec;
 
-use bevy::ecs::entity::Entity;
-use bevy::math::Vec2;
-use bevy::transform::components::Transform;
+use bevy::{
+    ecs::entity::Entity, math::Vec2, prelude::*,
+    transform::components::Transform,
+};
 
-use super::shape::{Shape, ShiftedShape};
-use super::util::{update_max_point, update_min_point};
-use super::BoundingBox;
+use super::{
+    shape::{Shape, ShiftedShape},
+    util::{update_max_point, update_min_point},
+    BoundingBox,
+};
 
 /// Collision instance
-#[derive(Copy, Clone, Debug, bevy_inspector_egui::Inspectable)]
+#[derive(Copy, Clone, Debug)]
 pub struct Collision {
     pub other_entity: Entity,
     pub mpv: Vec2,
 }
 
 /// Component, indicating that this entity can collide with other colliders.
-#[derive(Clone, Debug, Default, bevy_inspector_egui::Inspectable)]
+#[derive(Component, Clone, Debug, Default)]
 pub struct Collider {
     /// Shapes that comprise the collider.
-    #[inspectable(ignore)]
     shapes: SmallVec<[ShiftedShape; 2]>,
     /// Solid colliders are bounced off of, nonsolid can be passed through.
     pub solid: bool,
     /// Collision instances that happened within the last frame.
     /// This is cleared and set in `physics::update()` system each frame.
-    #[inspectable(ignore)]
     recent_collisions: Vec<Collision>,
     /// AABB, used for collision optimization
     bounding_box: BoundingBox,
@@ -81,7 +82,7 @@ impl Collider {
         // Iterate and update all shapes according to current `transform`,
         // while also capturing min and max points
         for shape in &mut self.shapes {
-            let (shape_min_point, shape_max_point) = shape.update(&transform);
+            let (shape_min_point, shape_max_point) = shape.update(transform);
             update_min_point(&mut min_point, shape_min_point);
             update_max_point(&mut max_point, shape_max_point);
         }

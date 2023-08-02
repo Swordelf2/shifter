@@ -66,7 +66,7 @@ pub fn update(
         collider.update(&transform);
     }
     for (_entity, transform, mut collider) in stat_object_query.iter_mut() {
-        collider.update(&transform);
+        collider.update(transform);
     }
 
     // Process collisions between all pairs of a dynamic and a static object

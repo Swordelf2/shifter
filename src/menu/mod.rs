@@ -7,22 +7,19 @@ use crate::state::AppState;
 
 /// Component, indicating that this is one of the main menu buttons,
 /// choosing which map to load
-#[derive(Clone, Copy)]
+#[derive(Component, Clone, Copy)]
 pub struct MapButton {
     pub map_id: usize,
 }
 
 /// Marker component for Main Menu
+#[derive(Component)]
 pub struct Menu;
 
 /* Systems */
 
 /// Runs on entering Menu state
-pub fn setup(
-    mut commands: Commands,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    font_handles: Res<asset::FontHandles>,
-) {
+pub fn setup(mut commands: Commands, font_handles: Res<asset::FontHandles>) {
     // Root of the menu entities hierarchy
     commands
         .spawn_bundle(NodeBundle::default())
@@ -42,8 +39,7 @@ pub fn setup(
                         ..Default::default()
                     },
                     // TODO this should be in impl FromWorld for a resource
-                    material: materials
-                        .add(ColorMaterial::from(Color::rgb(0.95, 0.95, 0.1))),
+                    color: UiColor(Color::rgb(0.95, 0.95, 0.1)),
                     ..Default::default()
                 })
                 .insert(MapButton { map_id: 0 })
@@ -87,7 +83,5 @@ pub fn update(
 /// Cleanup upon exiting the state
 pub fn exit(mut commands: Commands, menu_query: Query<Entity, With<Menu>>) {
     // Despawn the whole menu tree
-    commands
-        .entity(menu_query.single().unwrap())
-        .despawn_recursive();
+    commands.entity(menu_query.single()).despawn_recursive();
 }

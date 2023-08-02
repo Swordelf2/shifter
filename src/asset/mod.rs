@@ -21,7 +21,7 @@ pub enum FontLabel {
     NotoSansRegular,
 }
 
-pub fn object_label_to_texture_path(
+pub fn object_label_to_sprite_image_path(
     object_label: ObjectLabel,
 ) -> &'static Path {
     Path::new(match object_label {
@@ -48,13 +48,8 @@ pub fn font_label_to_path(font_label: FontLabel) -> &'static Path {
 }
 
 /// Handles to loaded textures
-pub struct TextureHandles {
-    pub handles: HashMap<ObjectLabel, Handle<Texture>>,
-}
-
-/// Handles to materials
-pub struct MaterialHandles {
-    pub handles: HashMap<ObjectLabel, Handle<ColorMaterial>>,
+pub struct ImageHandles {
+    pub handles: HashMap<ObjectLabel, Handle<Image>>,
 }
 
 /// Handles to fonts

@@ -9,7 +9,7 @@ use crate::util::QuatExt;
 use super::physics::DynamicObject;
 
 /// Marker component for the player entity
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Component, Copy, Clone, Debug, Default)]
 pub struct Player;
 
 /// Change player's accel in response to player input
@@ -18,7 +18,7 @@ pub fn input(
     mut player_query: Query<(&mut DynamicObject, &Transform), With<Player>>,
 ) {
     // TODO: add logging here
-    let (mut dynamic_object, transform) = match player_query.single_mut() {
+    let (mut dynamic_object, transform) = match player_query.get_single_mut() {
         Ok(dynamic_object) => dynamic_object,
         Err(QuerySingleError::NoEntities(_)) => return,
         Err(QuerySingleError::MultipleEntities(e)) => {
@@ -55,7 +55,7 @@ pub fn rotation(
     mut player_query: Query<&mut Transform, With<Player>>,
 ) {
     // TODO add logging here
-    let mut transform = match player_query.single_mut() {
+    let mut transform = match player_query.get_single_mut() {
         Ok(transform) => transform,
         Err(QuerySingleError::NoEntities(_)) => return,
         Err(QuerySingleError::MultipleEntities(e)) => {

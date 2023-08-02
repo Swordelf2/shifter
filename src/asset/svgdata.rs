@@ -26,10 +26,10 @@ pub struct SvgData {
 #[derive(Default)]
 pub struct SvgDataLoader;
 
-const LABEL_ATTR: &'static str = "inkscape:label";
-const DATA_LABEL: &'static str = "data";
+const LABEL_ATTR: &str = "inkscape:label";
+const DATA_LABEL: &str = "data";
 
-pub const COLLISION: &'static str = "collision";
+pub const COLLISION: &str = "collision";
 
 enum State {
     OutsideData,

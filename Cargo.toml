@@ -2,20 +2,20 @@
 name = "shifter"
 version = "0.1.0"
 authors = ["Evgeny Papazyan <swordelf@mail.ru>"]
-edition = "2018"
+edition = "2021"
 
 [features]
 # enable debug systems, defined in `debug` module
 debug = []
 
 [dependencies]
+bevy-inspector-egui = "0.11"
+bevy = "0.6"
 anyhow = "1.0"
-bevy = "0.5"
-bevy-inspector-egui = {version = "0.4.1"}
 strum = { version = "0.20", features = ["derive"] }
-svg = "0.9.1"
-itertools = "0.10.0"
-smallvec = "1.6.1"
+svg = "0.9"
+itertools = "0.10"
+smallvec = "1.11"
 
 # Enable optimizations for dependencies (incl. Bevy), but not for our code:
 [profile.dev.package."*"]
